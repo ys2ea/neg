@@ -43,6 +43,7 @@ We demonstrate the efficiency of the method on systems a variety of systems rang
 \end{abstract}
 \maketitle
 
+<<<<<<< HEAD
 %\emph{Introduction}
 
 Kohn-Sham (KS) density functional theory (DFT) is currently the most popular electronic structure method. However, the computational cost of the conventional KS DFT grows cubically with the number of atoms preventing its application to large systems. To overcome this limitation, recent research has focused on the development of linearly scaling (LS) DFT methods~\cite{goedecker1999linear,bowler2012methods}. 
@@ -164,7 +165,7 @@ We also note that the preconditioner does not need to be calculated for each ste
 
 
 \textbf{Results}
-Our method is integrated with the CP2K package\cite{cp2kgeneral}, which uses the mixed Gaussian and plane wave method\cite{vandevondele2005quickstep}, and is an ideal platform for LS method. The optimization scheme is applied to systems with small band gap which are typically difficult for LS methods. Fig~\ref{fig:accuracy} shows the energy as a function of $R_c$ for several different systems: (a) CdSe of 768 atoms. (b) 64 water molecules, where each fragment is an atoms, and there are strong interaction and significant electron delocalization between fragments. (c) dimond Si of 512 atoms. We note that upon applying the filter $Q^x$ on the gradient, the final energy is no longer fully variational: the gradient is only zero in diretions that significantly change the energy. It also implies that the energy will depend on the optimization path. However, it is clear from Fig~\ref{fig:accuracy} that the energy converges to the DFT value as a function of cutoff, and the error mentioned is neglectable. 
+Our method is integrated with the CP2K package\cite{cp2kgeneral}, which uses the mixed Gaussian and plane wave method\cite{vandevondele2005quickstep}, and is an ideal platform for LS method. The optimization scheme is applied to systems with small band gap which are typically difficult for LS methods. The inversion of MO overlap matrix is carried out using Hotelling method \cite{hotelling1943some} which is linear scaling when the overlap matrix is sparse. Fig~\ref{fig:accuracy} shows the energy as a function of $R_c$ for several different systems: (a) CdSe of 768 atoms. (b) 64 water molecules, where each fragment is an atoms, and there are strong interaction and significant electron delocalization between fragments. (c) dimond Si of 512 atoms. We note that upon applying the filter $Q^x$ on the gradient, the final energy is no longer fully variational: the gradient is only zero in diretions that significantly change the energy. It also implies that the energy will depend on the optimization path. However, it is clear from Fig~\ref{fig:accuracy} that the energy converges to the DFT value as a function of cutoff, and the error mentioned is neglectable. 
 
 \begin{figure}
 \includegraphics[width=0.35\textwidth]{CdSe}
@@ -191,7 +192,7 @@ To verify this, we have calculated $Q^x$ using Eq~(\ref{eq:baddir}) and compare 
 The physical meaning of Eq~\ref{eq:approxq} is a modified orthogonality constrain for LMOs. Orthognality and locality has generally been considered as competing properties: strict orthogonality leads to decaying tails, and for LMOs no orthogonality constrains are imposed except for MOs within a fragment. However, this causes the convergence problem previously mentioned: LMOs without orthogonality tends to collapse. Although global orthogonality cannot be achieved, we suggest a local orthogonality constrain, that the projection of MOs onto each fragment $x$ should be orthogonal. Unlike the case for none-local MOs, not every physically meaningful state can be transformed into such state.
 
 \textbf{linear performance}
-To test the linear efficiency of the method, we compare the calculation with orbital transformation (OT) \cite{weber2008direct,vandevondele2003efficient}, which is one of most optimized cubic scaling DFT method. The calculation is done for CdSe with different system sizes. The radial cutoff is set to be 0.9 vdWR, which from Fig~\ref{fig:accuracy} is enough to accurately describe the system. The result is shown in Fig~\ref{fig:scaling}.
+To test the linear efficiency of the method, we compare the calculation with orbital transformation (OT) \cite{weber2008direct,vandevondele2003efficient}, which is one of most optimized cubic scaling DFT method. The calculation is done for CdSe with different system sizes. The radial cutoff is set to be 0.9 vdWR, which from Fig~\ref{fig:accuracy} is enough to accurately describe the system. The result is shown in Fig~\ref{fig:scaling}. We note that our method is only linear scaling when the system is big enough so that the MO overlap matrix is sufficiently sparse, which for a dense system like CdSe takes many($\sim 3000$) atoms, resulting in the none-linear scaling behavior at small sizes.
 
 \begin{figure}
 \includegraphics[width=0.45\textwidth]{timing}
@@ -202,7 +203,7 @@ To test the linear efficiency of the method, we compare the calculation with orb
 
 
 \textbf{molecular dynamics}
-To further demonstrate the accuracy of the force and energy calculation, we run a molecular dynamics (MD) simulation on a system of 62 water molecules with 2 H$^+$ atoms. The 2 protons will hop around through OH covalent bond breaking and reforming. We show in Fig~\ref{fig:md} the total energy during the MD run, compared to the that from OT calculation. 
+To further demonstrate the accuracy of the force and energy calculation, we run a molecular dynamics (MD) simulation on a system of 62 water molecules with 2 H$^+$ atoms. The 2 protons will hop around through OH covalent bond breaking and reforming. We show in Fig~\ref{fig:md} the conserved quantity and the potential energy in a MD run, proving that a stable simulation can be achieved with our method. We note that the Hellmann–Feynman theorem\cite{feynman1939forces} is used for the calculation of the force, this is in general only true when the energy is full variational, which is not true in our case. But the MD simulation further demonstrated that this error is neglectable, a conclusion already drawn from Fig~\ref{fig:accuracy}.
 
 \begin{figure}
 \includegraphics[width=0.45\textwidth]{const}
