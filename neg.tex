@@ -103,32 +103,23 @@ The AO to MO matrix $\mathbf{T}$ thus has blocked form, and the identity operato
 %
 where $S^{\bar{x}\mu,\bar{x}\nu}$ is the matrix element of the inverse overlap matrix $S_{\bar{x}\mu,\bar{x}\nu} = \braket{ \chi_{\bar{x}\mu}}{ \chi_{\bar{x}\nu}} $. In the case on LMOs, the KS DFT energy functional can be written in a conventional way but with the one-electron density matrix [operator] modified to take into account nonorthogonality of LMOs
 \bea \label{eq:dm}
-%%R^{w\mu,z\nu} = \sum_{x,y}{T^{\overline{wx}\mu}}_{xi} \sigma^{xi,yj} {T^{\overline{zy}\nu}}_{yj} \\
 \op{R} = \sum_{x,y} \ket{\psi_{xi}} \sigma^{xi,yj} \bra{\psi_{yj}}
 \eea
 %
 %RZK all matrices must be defined.
 
-%\bea
-%E[\{\psi_i\}] &=& 2\sum_{i,j} (\sigma^{-1})_{i,j}\int \psi_i(\br) (-\frac{1}{2}\nabla^2) \psi_j(\br)d\br \nonumber \\
-%&+& \frac{1}{2} \int \int \frac{\rho(\br)\rho(\br')}{|\br-\br'|}d\br d\br' + E_{XC}[\rho] \\
-%&+& 2\sum_{i,j} (\sigma^{-1})_{i,j}\int \psi_i(\br) V_{ext}({\br}) \psi_j(\br) d\br \nonumber
-%\eea
-
 A straightforward minimization of the energy functional wrt $\mathbf{T}$ elements with a preconditioned conjugate gradient algorithm (PCG) has proven very reliable [low-prefactor method] for fully delocalized orbitals ($R_c \rightarrow \infty$) and completely localized orbitals ($R_c = 0$). PCG requires iterative evaluation of the energy gradient
 %
 \bea
-%{G_{\bar{x}\mu}}^{xi} \equiv \frac{\partial E}{\partial {T^{\bar{x}\mu}}_{xi}} = 4 [(\mathbf{I}-\mathbf{SR}) \mathbf{H} \mathbf{T}\sigma^{-1}]{_{\bar{x}\mu}}^{xi}
 {G_{\bar{x}\mu}}^{xi} \equiv \frac{\partial E}{\partial {T^{\bar{x}\mu}}_{xi}} = 4 \bra{\chi_{\bar{x}\mu}} (\op{I}-\op{R}) \op{H} \ket{\psi^{xi}}
 \eea
 %
 and the [single] inversion of a local preconditioner defined on domain $\bar{x}$
 %
 \bea
-%P_{\bar{x}\mu,\bar{x}\nu} &=& \left[(\mathbf{I}-\mathbf{SR}) \mathbf{H}(\mathbf{I}-\mathbf{RS}) + (\mathbf{I}-\mathbf{SRS})\right]_{\bar{x}\mu,\bar{x}\nu} 
 P_{\bar{x}\mu,\bar{x}\nu} &=& s_{x} \bra{\chi_{\bar{x}\mu}} (\op{I}-\op{R}) \op{H}(\op{I}-\op{R}) + (\op{I}-\op{R}) \ket{\chi_{\bar{x}\nu}} 
 \label{eq:hess}
-\eea % RZK the above equation is most likely incorrect
+\eea
 %
 This preconditioner is an easily-invertible approximation to the exact Hessian (the Supplementary Material and Ref.~\onlinecite{stoll1980use}) that was verified to provide the same rate/speed of convergence as the exact Hessian at a fraction of the inversion cost.
 %
@@ -234,5 +225,61 @@ RZK To add: The physical meaning of Eq~\ref{eq:approxq} is a modified orthogonal
 \section{Acknowledgments} The research was funded by the Natural Sciences and Engineering Research Council of Canada through the Discovery Grant. The authors are grateful to Compute Canada and McGill HPC Centre for computer time.
 
 \bibliography{negref}
+
+\section{Supplemental Material}
+
+Matrix equations clarify more compact operator expression used in the main text. 
+
+The energy:
+\bea
+E[\{\psi_i\}] &=& 2\sum_{i,j} (\sigma^{-1})_{i,j}\int \psi_i(\br) (-\frac{1}{2}\nabla^2) \psi_j(\br)d\br \nonumber \\
+&+& \frac{1}{2} \int \int \frac{\rho(\br)\rho(\br')}{|\br-\br'|}d\br d\br' + E_{XC}[\rho] \\
+&+& 2\sum_{i,j} (\sigma^{-1})_{i,j}\int \psi_i(\br) V_{ext}({\br}) \psi_j(\br) d\br \nonumber
+\eea
+
+Contravariant density matrix:
+%
+\bea
+\mathbf{R} = \mathbf{T} \sigma^{-1} \mathbf{T}^{\dagger}
+\sigma = \mathbf{T}^{\dagger} \mathbf{S} \mathbf{T}
+\eea
+%
+or, using the element by element notation,
+%
+\bea
+R^{w\mu,z\nu} = \sum_{x,y}{T^{\overline{wx}\mu}}_{xi} \sigma^{xi,yj} {T^{\overline{zy}\nu}}_{yj}
+\eea
+
+The gradient for domain $\bar{x}$
+%
+\bea
+\mathbf{G}_{\bar{x}x} = 4 \left[(\mathbf{I}-\mathbf{SR}) \mathbf{H} \mathbf{T}\sigma^{-1} \right]_{\bar{x}x}
+\eea
+%
+or
+%
+\bea
+{G_{\bar{x}\mu}}^{xi} = 4 \left[(\mathbf{I}-\mathbf{SR}) \mathbf{H} \mathbf{T}\sigma^{-1}\right]{_{\bar{x}\mu}}^{xi}
+\eea
+%
+
+The preconditioner for domain $\bar{x}$
+%
+\bea
+P_{\bar{x}\bar{x}} &=& s_x \left[(\mathbf{I}-\mathbf{SR}) \mathbf{H}(\mathbf{I}-\mathbf{RS}) + (\mathbf{I}-\mathbf{SRS})\right]_{\bar{x}\bar{x}} 
+\eea 
+%
+\bea
+P_{\bar{x}\mu,\bar{x}\nu} &=& s_x \left[(\mathbf{I}-\mathbf{SR}) \mathbf{H}(\mathbf{I}-\mathbf{RS}) + (\mathbf{I}-\mathbf{SRS})\right]_{\bar{x}\mu,\bar{x}\nu} 
+\eea 
+
+$\bar{x}$-coefficients of the $y$-centered orbitals projected onto $\bar{x}$-space are determined by
+%
+\bea
+\op{I}_{\bar{x}} \ket{\psi_{yi}}  &=& \ket{\chi_{\bar{x}\mu}} S^{\bar{x}\mu,\bar{x}\nu} \braket{ \chi_{\bar{x}\nu}}{ \chi_{\bar{y}\lambda}}\, {T^{\bar{y}\lambda}}_{yi} = \nonumber \\
+ &=& \ket{\chi_{\bar{x}\mu}} \left[ S^{\bar{x}\mu,\bar{x}\nu} S_{\bar{x}\nu,\bar{y}\lambda} {T^{\bar{y}\lambda}}_{yi} \right]
+\eea 
+%
+Note that coefficients outside $\bar{x}$ may be nonzero but we do not need them.
 
 \end{document}
