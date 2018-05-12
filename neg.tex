@@ -26,7 +26,7 @@
 \bibliographystyle{apsrev}
 
 %\title{RZK: Robust linear-scaling optimization of nonorthogonal localized molecular orbitals in density functional theory}
-\title{Solution to the problem of optimization of compact localized molecular orbitals in density functional theory}
+\title{Robust optimization of compact orbitals}
 
 \author{Yifei Shi}
 %\affiliation{Department of Chemistry, McGill University, 801 Sherbrooke St. West, Montreal, QC H3A 0B8, Canada}
@@ -37,43 +37,54 @@
 %\date{\today}
 
 \begin{abstract}
-%Despite being concept simplier and computationally advantageous to density-matrix DFT NON-orth MO LS DFT has not become 
-Although density functional theory based on [strictly] localized nonorthogonal molecular orbitals is a conceptually simple and promising linear-scaling method [for nonmetallic systems] its development has been hindered because of the inherently difficult optimization of such orbitals. 
-In this work, we identified the origin of the slow and unstable convergence and developed a robust linear-scaling optimization procedure with a low computational overhead. 
-%In this work, we develop a new method that avoids the problem by modifying the preconditioned conjugate gradient method. The optimization directions causing the slow convergence is filtered out and neglected using the approximate Hessian. We show that, by removing these directions, the energy and other properties can be obtained accurately and the computational cost is significantly reduced. This corresponds to posing a relaxed orthogonality constrains on the molecuar orbits. 
-We demonstrate the efficiency of the method on systems a variety of systems ranging from molecular liquids to semi-conductors and insulators [in static systems and ab initio molecular dynamics simulations]. 
+Density functional theory based on compact nonorthogonal molecular orbitals is a conceptually simple method that can enable low-cost linear-scaling modeling of the electronic structure of molecules and materials with finite band gap. 
+Unfortunately, its development has been hindered because a compact representation of the electronic ground state is difficult to find [in a variational optimization procedure]. 
+In this work, we identified the origin of the slow and unstable convergence and developed a simple and robust linear-scaling optimization procedure with a low computational overhead. 
 % RZK0: greater detail in the abstract?
+%In this work, we identified the origin of problem as that occupied and nearly-occupied mixing modes and developed a robust optimization procedure to remove these modes from the optimization procedure.  using the approximate Hessian. We show that, by removing these directions, the energy and other properties can be obtained accurately and the computational cost is significantly reduced. 
+We demonstrated the efficiency of the method for a variety of systems ranging from molecular liquids to semi-conductors and insulators.  
 %Implications.  %Furthermore, although this method is not fully variational, it is still accurate enough to produce stable molecular dynamics in systems where chemical reactions happen.
 \end{abstract}
 \maketitle
 
 %\emph{Introduction}
 
-Kohn-Sham (KS) density functional theory (DFT) is currently the most popular electronic structure method. However, the computational cost of the conventional KS DFT grows cubically with the number of atoms preventing its application to large systems. To overcome this limitation, recent research has focused on the development of linearly scaling (LS) DFT methods~\cite{goedecker1999linear,bowler2012methods}. 
+Today, Kohn-Sham (KS) density functional theory (DFT) is the most popular electronic structure method. 
+The computational cost of the conventional diagonalization-based KS DFT grows cubically with the number of atoms preventing its application to large systems. 
+To overcome this limitation, substantial efforts have been directed to the development of linearly scaling (LS) DFT methods~\cite{goedecker1999linear,bowler2012methods}. 
 %RZK: perhaps it is worth mentioning that construction of the effective KS Hamiltonian is already linear, the current bottleneck is a cubically-scaling procedure for the optimization of electronic degrees of freedom.
 
-%RZK: orbits -> orbitals
-All LS DFT method utilize the localized nature of gapped systems. A large family of methods work with the one-electron density matrix (DM)\cite{li1993density,lee1996linear,li2003density,vandevondele2012linear}, $F(\mathbf{r},\mathbf{r}^{'})=\sum_i f_i \phi_i(\mathbf{r}) \phi_i(\mathbf{r}^{'})$, which decays exponentially in $|\mathbf{r}-\mathbf{r}^{'}|$.These include methods like the Fermi operator expansion~\cite{goedecker1994efficient,goedecker1995tight}, divide-and-conquer method~\cite{yang1991direct,yang1991local}, and density matrix minimization method\cite{li1993density}. However, in a typical electronic structure calculation, the number of atomic orbits (AOs) is much larger than the number of molecular orbits (MOs), thus DM methods generally need to handle larger matrices and more variational parameters, limiting the DM methods mostly to minimal-basis tight-binding problems. 
+In all LS DFT methods, the delocalized eigenstates of the effective KS Hamiltonian must be replaced with an alternative set of \emph{local} electronic descriptors. 
+Most LS methods explore the natural locality of the one-electron density matrix (DM)~\cite{li1993density, lee1996linear, li2003density, vandevondele2012linear, Kussmann2013, Aarons2016}.  
+They include the Fermi operator expansion~\cite{goedecker1994efficient,goedecker1995tight}, divide-and-conquer~\cite{yang1991direct,yang1991local}, and direct DM minimization methods~\cite{li1993density, vandevondele2012linear}. 
+However, the variational optimization of the DM is very inefficient for accurate DFT calculations which require many basis functions per atom~\cite{a:ls-dm-sign, Arita2014, a:ls-rev-2012, a:almo-ls}.
+Therefore, the application of DM-based LS methods have been mostly restricted to minimal-basis tight-binding problems~\cite{Richters2014, example-of-a-large-scale-tight-binding}. 
+This issue is rectified in optimal-basis DM methods~\cite{Skylaris2005, Nakata2015, Mohr2015} that contract large basis sets into a small number of new localized functions and then optimize the DM in the contracted basis. 
+Despite becoming the most popular approach to LS DFT, the efficiency of these methods is hampered by the costly optimization of both the contracted orbitals and the DM~\cite{a:ls-onetep-2003}. 
 
-% RZK: AOs is only one type of localized basis set functions. Most LS codes do not use AOs. I would, therefore, replace "AOs" with "localized basis functions".
- 
-Another approach to LS DFT is based on local molecular orbits (LMO), where electrons can only occupy AOs of certain molecules. Since, generally speaking, locality and orthogonality are not simultaneously obtainable, non-orthogonal LMOs are generally used. 
-% RZK: should we introduce NLMOs to designate nonorthogonal LMOs? 
-To avoid the calculation of the inverse of MO overlap matrix, a series of work have focused on using new energy functionals~\cite{mauri1993orbital,kim1995total,ordejon1995linear}, or introducing extra optimization variables~\cite{burger2008linear,peng2013effective}. This approach has the advantage of using fewer variational parameters, being more intuitive, and providing additional useful information about charge transfer interactions~\cite{khaliullin2007unravelling,khaliullin2008analysis}. However, the LMO approach suffers from intrinsic convergence problems~\cite{ordejon1995linear,fattebert2004linear}.
-%
-%
+From the computational point of view, a direct variation of compact molecular orbitals (CMOs)---orbitals that are strictly localized within predefined regions---is preferable because LS can be achieved with significantly fewer variables. 
+Advantages of this orbitals-only LS DFT are especially pronounced in accurate calculations that require many basis functions per atom. 
+Unfortunately, the development of promising orbital-based LS methods has been all but abandoned~\cite{a:weitao-yang-2013,a:ls-tsuchida-aomm} because of the difficult variational optimization of compact localized orbitals~\cite{a:ls-rev-1999,a:ls-mauri-galli-car-1993,a:ls-ordejon-1995,a:ls-fattebert-2004,a:weitao-yang-2013,a:ls-tsuchida-aomm}. 
+
+%%%%--STOPPED--
+Since, generally speaking, compactness and orthogonality are not simultaneously obtainable CMOs are nonorthogonal. 
 %Furthermore it was also shown in \cite{ordejon1995linear} that the straightforward LMO calculation without using a new energy functional may end up in a set of MOs that are collapsing. And the new energy functionals may lead to multiple minima \cite{kim1995total}.
-In addition to poor convergence, the optimization of (N)LMOs without imposed orthogonality constraints often leads to a state, in which LMOs becoming linearly dependent. Such an orbital collapse is illustrated by the value of the determinant of the MO overlap matrix in a straightforward energy minimization of a simple linear systems of four hydrogen fluoride molecules interacting through hydrogen bonds. We used DZVP basis set and preconditioned conjugate gradient algorithm. In Fig~\ref{fig:det} we show the determinant of the MO overlap matrix and the maximum norm of the energy gradient as a function of the minimization step. The minimization brings the state into a singular point and as a result the energy gradient does not vanish. This aggravates the convergence problem.
+In addition to poor convergence, the optimization of CMOs without imposed orthogonality constraints often leads to a state, in which LMOs becoming linearly dependent. Such an orbital collapse is illustrated by the value of the determinant of the MO overlap matrix in a straightforward energy minimization of a simple linear systems of four hydrogen fluoride molecules interacting through hydrogen bonds. We used DZVP basis set and preconditioned conjugate gradient algorithm. In Fig~\ref{fig:det} we show the determinant of the MO overlap matrix and the maximum norm of the energy gradient as a function of the minimization step. The minimization brings the state into a singular point and as a result the energy gradient does not vanish. This aggravates the convergence problem.
 
 %RZK: it is important to state that electrons delocalize only to the neighbors, the problem does not happen in fully localized and fully delocalized case. To describe the system it is useful to use pictorial representation.
+
+
+%Another approach to LS DFT is based on local molecular orbitals (LMO), where electrons can only occupy [AOs -- localization regions] of certain molecules. 
+
+Several efforts were made to deal with these problems. To avoid the calculation of the inverse of CMO overlap matrix, a series of work have focused on using new energy functionals~\cite{mauri1993orbital,kim1995total,ordejon1995linear}, or introducing extra optimization variables~\cite{burger2008linear,peng2013effective}. This approach has the advantage of using fewer variational parameters, being more intuitive, and providing additional useful information about charge transfer interactions~\cite{khaliullin2007unravelling,khaliullin2008analysis}. However, the LMO approach suffers from intrinsic convergence problems~\cite{ordejon1995linear,fattebert2004linear}.
+%
+In~\cite{tsuchida2007augmented,tsuchida2008ab}, the MOs are forced to be orthogonal to an auxiliary wave function on a ``kernel region". Recently, in Ref.~\onlinecite{khaliullin2013efficient}, a block-diagonal reference is first calculated and then correction which is constrained to be orthogonal to the reference is added in the second step. These two methods have all been successful in improving the convergence by constraining the MOs to be orthogonal to some reference states, thus requiring the reference to be somewhat physically meaningful. RZK: this only works for weakly-interacting molecular systems (the DOFs projected out already resemble the final occupied states)
 
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{det}
 \caption{The determinant of the MO overlap matrix, and maximum norm of the energy gradient. }
 \label{fig:det}
 \end{figure}
-
-Several efforts were made to deal with these problems. In~\cite{tsuchida2007augmented,tsuchida2008ab}, the MOs are forced to be orthogonal to an auxiliary wave function on a ``kernel region". Recently, in Ref.~\onlinecite{khaliullin2013efficient}, a block-diagonal reference is first calculated and then correction which is constrained to be orthogonal to the reference is added in the second step. These two methods have all been successful in improving the convergence by constraining the MOs to be orthogonal to some reference states, thus requiring the reference to be somewhat physically meaningful. RZK: this only works for weakly-interacting molecular systems (the DOFs projected out already resemble the final occupied states)
 
 Despite multiple potential advantages a reliable LMO-based LS method is still lacking for strongly interacting [nonmetallic] systems. In this work, we propose a new LS DFT method, based on LMOs, by identifying and filtering out the optimization directions that cause the slow convergence. The new method has the advantage that: (a) The energy converges fast, and works with systems where interactions are strong. (b) No ``block-diagonal reference" or ``kernel region" are needed like in \cite{tsuchida2007augmented} or \cite{khaliullin2013efficient}.
 %(b) The problem of orbital collapse is avoided. (c) Exact inverse of the MO overlap matrix is used, the inversion is linear when the overlap is sparse. This prevents the error introduced by approximate inverse overlap and the problem of multiple minima. 
