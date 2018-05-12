@@ -246,12 +246,20 @@ Our method is integrated with the CP2K package\cite{cp2kgeneral}, which uses the
 \end{figure}
 
 
-\label{marker:moldyn}To further demonstrate the accuracy of the force and energy calculation, we run a molecular dynamics (MD) simulation on a system of 62 water molecules with 2 H$^+$ atoms. The 2 protons will hop around through OH covalent bond breaking and reforming. We show in Fig~\ref{fig:md} the conserved quantity and the potential energy in a MD run, proving that a stable simulation can be achieved with our method. We note that the Hellmann–Feynman theorem\cite{feynman1939forces} is used for the calculation of the force, this is in general only true when the energy is full variational, which is not true in our case. But the MD simulation further demonstrated that this error is neglectable, a conclusion already drawn from Fig~\ref{fig:accuracy}.
+%\label{marker:moldyn}To further demonstrate the accuracy of the force and energy calculation, we run a molecular dynamics (MD) simulation on a system of 62 water molecules with 2 H$^+$ atoms. The 2 protons will hop around through OH covalent bond breaking and reforming. We show in Fig~\ref{fig:md} the conserved quantity and the potential energy in a MD run, proving that a stable simulation can be achieved with our method. We note that the Hellmann–Feynman theorem\cite{feynman1939forces} is used for the calculation of the force, this is in general only true when the energy is full variational, which is not true in our case. But the MD simulation further demonstrated that this error is neglectable, a conclusion already drawn from Fig~\ref{fig:accuracy}.
+
+%\begin{figure}
+%\includegraphics[width=0.45\textwidth]{const}
+%\caption{The total energy (kinetic plus potential) as a function of time, computed with linear scaling method and OT. Inset: the potential energy (Pot) and constant quantity (Const Qty) for linear scaling method.}
+%\label{fig:md}
+%\end{figure}
+
+To further demonstrate the accuracy of the energy calculation, we perform Monte Carlo (MC) simulation of a defected dimond silicon lattice, where 2 neighboring silicon atoms are replaced by 2 carbon atoms. The resulting silicon-silicon radial distribution function (RDF) is shown in Fig~\ref{fig:mc}. For comparison we also show the RDF calculated from molecular dynamics simulation using OT. 
 
 \begin{figure}
-\includegraphics[width=0.45\textwidth]{const}
-\caption{The total energy (kinetic plus potential) as a function of time, computed with linear scaling method and OT. Inset: the potential energy (Pot) and constant quantity (Const Qty) for linear scaling method.}
-\label{fig:md}
+\includegraphics[width=0.45\textwidth]{rdf_si}
+\caption{Radial distribution calculated with MC using the new method, and OT with molecular dynamics. The temperature is set at 500K, the systems includes 62 silicon atoms and 2 carbon atoms, periodic boundary condition is used.}
+\label{fig:mc}
 \end{figure}
 
 
