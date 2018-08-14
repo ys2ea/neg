@@ -38,14 +38,13 @@
 %\date{\today}
 
 \begin{abstract}
-Density functional theory based on compact nonorthogonal molecular orbitals is a conceptually simple method that can enable low-cost linear-scaling modeling of the electronic structure of molecules and materials with finite band gap. 
-Unfortunately, its development has been hindered because a compact representation of the electronic ground state is difficult to find in a variational optimization procedure. 
-%The origins of the have not been described. 
-In this work, we identified the origin of the slow and unstable convergence and developed a simple and robust linear-scaling optimization procedure with a low computational overhead. 
-% RZK0: greater detail in the abstract?
-%In this work, we identified the origin of problem as that occupied and nearly-occupied mixing modes and developed a robust optimization procedure to remove these modes from the optimization procedure.  using the approximate Hessian. We show that, by removing these directions, the energy and other properties can be obtained accurately and the computational cost is significantly reduced. 
-We demonstrated the efficiency of the method for a variety of systems ranging from molecular liquids to semi-conductors and insulators.  
-%Implications.  %Furthermore, although this method is not fully variational, it is still accurate enough to produce stable molecular dynamics in systems where chemical reactions happen.
+Density functional theory based on compact localized nonorthogonal molecular orbitals is a conceptually simple method that can potentially enable low-cost linear-scaling modeling of the electronic structure of molecules and materials with finite energy gap. 
+Unfortunately, its development has long been hindered because a compact representation of the electronic ground state is difficult to find in a variational optimization procedure. 
+In this work, we showed that the slow and unstable optimization of compact orbitals is due to the nearly-invariant mixing of occupied orbitals that almost entirely but not fully localized within their local vector subspaces. 
+%In this work, we identified the origin of the slow and unstable optimization of strictly localized orbitals and developed a simple and robust linear-scaling [optimization] procedure with a low computational overhead. 
+We also proposed a simple and practical method for identifying and removing the problematic nearly-invariant modes using an approximate Hessian and, as a result, developed a robust linear-scaling optimization procedure with a low computational overhead.  
+We demonstrated the new method is highly efficient yet accurate for a variety of systems ranging from molecular liquids to semi-conductors and insulators.  
+%Implications.  %Although this method is not fully variational, it is still accurate enough to produce stable molecular dynamics in systems where chemical reactions happen.
 \end{abstract}
 \maketitle
 
@@ -69,12 +68,12 @@ From the computational point of view, a direct variation of one-electron orbital
 The computational advantages of orbitals-only LS DFT are especially pronounced in accurate calculations that require many basis functions per atom. 
 Strictly localized orbitals are also advantageous from the physical point of view because they provide clear, chemically meaningful, transferable description of interactions between atoms or molecules~\cite{ZZZweitao,stoll,khaliullin2007unravelling,khaliullin2008analysis}. 
 %
-Such orbitals are known under different names --- localized wave functions~\cite{ordejon1995linear}, nonorthogonal Wannier functions~\cite{weitao,ZZZ}, absolutely localized orbitals~\cite{stoll1980use}, orbitals on compact support~\cite{ZZZ}, non-orthogonal localized molecular orbital~\cite{weitao}. They will be referred to as compact molecular orbitals (CMOs) here to emphasize that the expansion coefficients of these orbitals in some localized basis set (e.g. atomic orbitals, Gaussian orbitals, ZZZ) are constrained to be precisely zero outside orbital's predefined localization region.
+Such orbitals are known under different names --- localized wave functions~\cite{ordejon1995linear}, nonorthogonal Wannier functions~\cite{weitao,ZZZ}, absolutely localized orbitals~\cite{stoll1980use}, orbitals on compact support~\cite{ZZZ}, non-orthogonal localized molecular orbital~\cite{weitao}. In this work, they will be referred to as compact localized molecular orbitals (CLMOs) to emphasize that the expansion coefficients of these orbitals in some localized basis set (e.g. atomic orbitals, Gaussian orbitals, ZZZ) are constrained to be precisely zero outside orbital's predefined localization region.
 %
-Unfortunately, the development of promising CMO-based LS methods has been hindered~\cite{a:weitao-yang-2013,a:ls-tsuchida-aomm, fattebert-recent} because of inherently difficult variational optimization of CMOs~\cite{a:ls-mauri-galli-car-1993,ordejon1995linear,a:ls-rev-1999, fattebert2004linear, peng2013effective, a:ls-tsuchida-aomm, weitao-yang}. 
-%There are also other undisirable features, manifesting depending on a particular method: multiple minima, slow convergence with large number of iterations, position of localization centers must be chosen a priori, runaway solutions, charge-conservation issues. These are not exhibited by DM-based methods (Section 3.E of Ref.~\onlinecite{goedecker1999linear}).
+Unfortunately, the development of promising CLMO-based LS methods has been hindered~\cite{a:weitao-yang-2013,a:ls-tsuchida-aomm, fattebert-recent} because of inherently difficult variational optimization of CLMOs~\cite{a:ls-mauri-galli-car-1993,ordejon1995linear,a:ls-rev-1999, fattebert2004linear, peng2013effective, a:ls-tsuchida-aomm, weitao-yang}. 
+%There are also other undesirable features, manifesting depending on a particular method: multiple minima, slow convergence with large number of iterations, position of localization centers must be chosen a priori, runaway solutions, charge-conservation issues. These are not exhibited by DM-based methods (Section 3.E of Ref.~\onlinecite{goedecker1999linear}).
 %
-%RZK: Complete CMO references:
+%Complete CLMO references:
 %%%%%% Before Goedecker 1999
 % G. Galli and M. Parrinello, Phys. Rev. Lett. 69, 3547 (1992).
 % W.-L. Wang and M. Teter, Phys. Rev. B 46, 12798 (1992).
@@ -87,7 +86,7 @@ Unfortunately, the development of promising CMO-based LS methods has been hinder
 % E. B. Stechel, A. R. Williams, and P. J. Feibelman, Phys. Rev. B 49, 10088 (1994).
 % S. Goedecker and L. Colombo, Phys. Rev. Lett. 78, 122 (1994).
 % T. A. Arias, M. C. Payne, and J. D. Joannopoulos, Phys. Rev. Lett. 69, 1077 (1992).
-%%%%%% After Goedecker review:
+%%%%%% After Goedecker 1999 review:
 %%%%%% Jean-Luc Fattebert
 % fattebert2000towards https://journals.aps.org/prb/pdf/10.1103/PhysRevB.62.1713
 % fattebert2002density https://onlinelibrary.wiley.com/doi/full/10.1002/jcc.10069
@@ -97,23 +96,24 @@ Unfortunately, the development of promising CMO-based LS methods has been hinder
 %%%%%% Weitao Yang
 % Yang, W., 1997, Phys. Rev. B 56, 9294.
 
-
-In addition to poor convergence, a straightforward optimization of CMOs, which cannot be constrained to stay both compact and orthogonal~\cite{stoll,ZZZ}, often leads to a ``collapsed'' electronic state represented by linearly dependent occupied orbitals~\cite{ordejon1995linear}.
+In addition to poor convergence, a straightforward optimization of CLMOs, which cannot be constrained to stay both compact and orthogonal~\cite{stoll,ZZZ}, often leads to a ``collapsed'' electronic state represented by linearly dependent occupied orbitals~\cite{ordejon1995linear}. 
 %
-%Furthermore it was also shown in \cite{ordejon1995linear} that the straightforward LMO calculation without using a new energy functional may end up in a set of MOs that are collapsing. And the new energy functionals may lead to multiple minima \cite{kim1995total}.
-Figure~\ref{fig:det} shows that such a collapse, indicated by the vanishing determinant of the CMO overlap matrix, is associated with 
+%Furthermore it was also shown in \cite{ordejon1995linear} that the straightforward LMO calculation without using a new energy functional may end up in a set of MOs that are collapsing. And the new energy functionals may lead to multiple minima \cite{kim1995total}. (Perhaps our formulation also has the multiple minima problem)
+Figure~\ref{fig:det} shows that such a collapse, indicated by the vanishing determinant of the CLMO overlap matrix, is associated with 
 %---caused by or causing---
 the convergences problem. 
 
-Several/Numerous efforts were made to resolve these problems. A series of work have focused on using new energy functionals~\cite{mauri1993orbital,kim1995total,ordejon1995linear} that avoid using the inverse of CMO overlap matrix. 
+Several/Numerous efforts were made to resolve these problems. A series of work have focused on using new energy functionals~\cite{mauri1993orbital,kim1995total,ordejon1995linear} that avoid using the inverse of the CLMO overlap matrix. 
 Inclusion of unoccupied orbitals~\cite{kim1995total} or extra optimization variables~\cite{burger2008linear,peng2013effective} has been proposed to mitigate convergence problems. 
 % kim1995total: They do not resolve the optimization problem, they only create a method that converges to the proper minimum from ANY initial state. They judge convergence by the energy approaching a plato. They need hundreds of steps to produce a well-converged state. They are not converged even then. This can be seen from unstable MD. How do they address the problem of multiple minima? They expand the variational space by including unoccupied orbitals and add the mu-dependent penalty designed to keep the number of electrons constant. They need to optimize mu (chemical potential) as well.
 % ordejon1995linear: At each time step of the simulation, the electronic energy was minimized within a tolerance of 10$^{-8}. RZK: what does it mean? It does not seem that they use the norm of the gradient... Same problem as with kim1995total. Convergence criteria is the energy change, MD is unstable.
-Why these attempts were not successful? The origins of the have not been described. Dramatically increased computational cost is one reason.
+\new Yifei, the introduction must describe why the methods described in the reference list above were not successful in solving the convergence problem? \old
+%The origins of the convergence problem have not been described. 
+%Dramatically increased computational cost is one reason.
 
-The convergence problem has been reliably solved for weakly-interacting molecular systems. Tsuchida \emph{et al.} showed~\cite{tsuchida2007augmented,tsuchida2008ab} that CMOs can be optimized efficiently if they are forced to be orthogonal to precomputed auxiliary tightly localized nonoverlaping orbitals fixed on their molecules. Similar Recently, in Ref.~\onlinecite{khaliullin2013efficient}, a block-diagonal reference is first calculated and then correction which is constrained to be orthogonal to the reference is added in the second step. These two methods have all been successful in improving the convergence by constraining the MOs to be orthogonal to some reference states, thus requiring the reference to be somewhat physically meaningful. RZK: this only works for weakly-interacting molecular systems (the DOFs projected out already resemble the final occupied states)
+The convergence problem has been reliably solved only for weakly-interacting molecular systems. Tsuchida \emph{et al.} showed~\cite{tsuchida2007augmented,tsuchida2008ab} that CLMOs can be optimized efficiently if they are forced to be orthogonal to  a set of auxiliary tightly localized nonoverlaping orbitals, precomputed and fixed on their molecules. Similar Recently, in Ref.~\onlinecite{khaliullin2013efficient}, a block-diagonal set of orbitals is first optimized and then used to as a projector during optimization of CLMOs in the second step. These two methods have all been successful in improving the convergence by constraining the MOs to be orthogonal to some reference states, thus requiring the reference to be somewhat physically meaningful. RZK: this only works for weakly-interacting molecular systems (the DOFs projected out already resemble the final occupied states)
 
-Despite multiple potential advantages a reliable LMO-based LS method is still lacking for strongly interacting [nonmetallic] systems. In this work, we propose a new LS DFT method, based on LMOs, by identifying and filtering out the optimization directions that cause the slow convergence. The new method has the advantage that: (a) The energy converges fast, and works with systems where interactions are strong. (b) No ``block-diagonal reference" or ``kernel region" are needed like in \cite{tsuchida2007augmented} or \cite{khaliullin2013efficient}.
+Despite multiple potential advantages a reliable orbital-based LS method is still lacking for strongly interacting [nonmetallic] systems. In this work, we propose a new LS DFT method, based on LMOs, by identifying and filtering out the optimization directions that cause the slow convergence. The new method has the advantage that: (a) The energy converges fast, and works with systems where interactions are strong. (b) No ``block-diagonal reference" or ``kernel region" are needed like in \cite{tsuchida2007augmented} or \cite{khaliullin2013efficient}.
 %(b) The problem of orbital collapse is avoided. (c) Exact inverse of the MO overlap matrix is used, the inversion is linear when the overlap is sparse. This prevents the error introduced by approximate inverse overlap and the problem of multiple minima. 
 (c) The problem of orbital collapse is avoided. (d) Although this method is not fully variational and the energy is not the minimum of any energy functional, it still produces stable dynamics for systems involving chemical reactions. 
 
@@ -269,6 +269,7 @@ We also note that the preconditioner does not need to be calculated for each ste
 \end{figure}
 
 \label{marker:results}
+%RZK: energy units - kJ/mol per atom/molecule, zero energy at block-diagonal reference, check number of atoms for silicon (unrealistic delocalization energy)
 Our method is integrated with the CP2K package\cite{cp2kgeneral}, which uses the mixed Gaussian and plane wave method\cite{vandevondele2005quickstep}, and is an ideal platform for LS method. The optimization scheme is applied to systems with small band gap which are typically difficult for LS methods. The inversion of MO overlap matrix is carried out using Hotelling method \cite{hotelling1943some} which is linear scaling when the overlap matrix is sparse. Fig~\ref{fig:accuracy} shows the energy as a function of $R_c$ for several different systems: (a) CdSe of 768 atoms. (b) 64 water molecules, where each fragment is an atoms, and there are strong interaction and significant electron delocalization between fragments. (c) dimond Si of 512 atoms. We note that upon applying the filter $Q^x$ on the gradient, the final energy is no longer fully variational: the gradient is only zero in diretions that significantly change the energy. It also implies that the energy will depend on the optimization path. However, it is clear from Fig~\ref{fig:accuracy} that the energy converges to the DFT value as a function of cutoff, and the error mentioned is neglectable. 
 
 \begin{figure}
