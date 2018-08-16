@@ -27,7 +27,7 @@
 
 %\title{RZK: Robust linear-scaling optimization of nonorthogonal localized molecular orbitals in density functional theory}
 % RZK: consider calling then "compact nonorthogonal Wannier orbitals/functions"
-\title{Robust optimization of compact orbitals}
+\title{Robust [variational] optimization of compact localized orbitals}
 
 \author{Yifei Shi}
 %\affiliation{Department of Chemistry, McGill University, 801 Sherbrooke St. West, Montreal, QC H3A 0B8, Canada}
@@ -127,30 +127,44 @@ Despite multiple potential advantages a reliable orbital-based LS method is stil
 \label{marker:theory} 
 In any CLMO method, concepts of electron \emph{localization centers} and electron \emph{localization domains} play key roles. 
 
-In the first step, all atoms of a system, basis set orbitals localized on atoms --- in our case atomic orbitals (AOs) --- and electrons of a system are logically divided into nonoverlapping subsets called localization centers, often also referred to as \emph{fragments}. For a system with clearly defined small molecules, a typical localization center includes all atoms of a single molecule and their associated basis set orbitals and electrons. For systems that cannot be partitioned into molecules -- the subject of this work -- a localization center is represented by a single atom. As a results of the partitioning, each electron is assigned to a localization center. Within Kohn-Sham DFT, electrons are described by molecular orbitals (MOs) \ket{\psi_{xi}} whose indices now indicate that orbital $i$ belongs to center $x$.
+In the first step, all atoms of a system, basis set orbitals localized on atoms --- in our case atomic orbitals (AOs) --- and electrons of a system are logically divided into nonoverlapping subsets called localization centers, often also referred to as fragments. For a system with clearly defined small molecules, a typical localization center includes all atoms of a single molecule and their associated basis set orbitals and electrons. For systems that cannot be partitioned into molecules --- the subject of this work --- a localization center is represented by a single atom. As a results of the partitioning, each electron acquires a localization center label. Within Kohn-Sham DFT, electrons are described by molecular orbitals (MOs) \ket{\psi_{xi}} whose indices now indicate that orbital $i$ belongs to center $x$. Throughout this work, centers are labeled with Latin letters $x,y,\ldots$ whereas with Latin letters $i,j,\ldots$ label MOs. 
 
-Indices i and x.
-
-In the next step, each center is assigned a predefined element-specific radius $R_c$ that is used to define neighbors for each center in an obvious way: two centers are considered neighbors if they are located within a sum of their radii. Localization domain for each center is then defined as a subset of basis set orbitals localized on center's neighbor atoms. 
-
-Indices x-bar. Localization domains overlap.
-
-The main assumption of CLMO methods is that the electronic structure of the systems can be approximated well by molecular orbitals that are completely localized within their domains. In other words, electrons in a systems are localized within $R_c$ from their atoms. 
+In the next step, each center is assigned a predefined element-specific radius $R_c$ that is used to define neighbors for each center in an obvious way: two centers are considered neighbors if they are located within a sum of their radii. Localization domain for each center is then defined as a subset of basis set orbitals \ket{\chi_{\bar{x}\mu}} that are localized on neighbor atoms of the center. In our notation, the bar over a center index $\bar{x}$ refers to all neighbors of this center, and basis set orbitals are denoted with Greek letters $\mu,\nu,\ldots$. Thus, the basis set orbitals of a localization domain form a subspace in the one-electron Hilbert space. The following projection operator serves as the identity operator on the subspace:
 %
 \bea
-\ket{\psi_{xi}} = \ket{\chi_{\bar{x}\mu}} {T^{\bar{x}\mu}}_{xi}
+\op{I}_{\bar{x}} = \ket{\chi_{\bar{x}\mu}} S^{\bar{x}\mu,\bar{x}\nu} \bra{ \chi_{\bar{x}\nu}},
+\eea
+%
+where $S^{\bar{x}\mu,\bar{x}\nu}$ is the matrix element of the inverse overlap matrix $S_{\bar{x}\mu,\bar{x}\nu} = \braket{ \chi_{\bar{x}\mu}}{ \chi_{\bar{x}\nu}} $. Note that the conventional tensor notation is used to work with the nonorthogonal orbitals~\cite{RZK-tensor}: covariant quantities are denoted with subscripts, contravariant quantities with superscripts, and summation is implied over the same indices. However, there is one important exception that the Einstein convention does not imply summation over centers and domains. 
+%RZK-tensor: J. Chem. Phys. 108, 616, 1998.
+%
+By construction a basis set function may belong to several localization domains. Therefore, generally speaking domains overlap:
+%
+\begin{eqnarray}
+\label{eq:span}
+\hat{I} \neq \sum_{\bar{x}} \hat{I}_{\bar{x}}.
+\end{eqnarray}
+
+In the final step, the main approximation of CLMO methods is introduced. It is assumed that the electronic structure of the system can be described accurately by molecular orbitals that are completely localized within domains of their centers
+%
+\bea
+\ket{\psi_{xi}} = \op{I}_{\bar{x}} \ket{\psi_{xi}} = \ket{\chi_{\bar{x}\mu}} {T^{\bar{x}\mu}}_{xi}
 \label{eq:LMO}
 \eea
-%RZK: note the trick to keep up-down indices aligned
-
-%Orbitals constructed in such a way represent electrons strictly localized in a spherical region of radius $R_c$.
-
-%RZK: They are expected to represent the maximally localized Wannier functions \cite{marzari1997maximally,he2001exponential}. This is not true: In addition to being spatially localized MLWFs satisfy other constraints, which are not imposed on LMOs. I would remove this comparison unless you think it is absolutely necessary.
+%RZK: note the Latex trick to keep up-down indices aligned
 %
-One weakness of defining CLMO domains \emph{a priori} in this way is that at least rough idea about the electron distribution in a system is required to assign electrons to localization centers and domains. Such a procedure is, of course, not applicable to systems in which the exact bonding properties are unknown.
+Thus this approximation imposes a blocked structure on the matrix of MO coefficients $\mathbf{T}$
+%
+\bea
+\ket{\psi_{xi}} = \ket{\chi_{\bar{x}\mu}} {T^{\bar{x}\mu}}_{xi},
+\label{eq:LMO}
+\eea
+%
+opens up a possibility of performing LS calculation with MOs, and, physically, corresponds to electrons localized within a predefined localization radius $R_c$ from their centers.
 
-% Matrices are bold %RZK0 define domain, define bars over fragment indices, spin-polarized case in the SI, Gamma-point, replace fragment with center.
-In this work, fragments are denoted by $x,y,\ldots$, AOs are denoted by greek letters $\chi_\mu,\chi_\nu ..$, MOs are denoted by $\psi_i,\psi_j..$, $\chi_{\bar{x}\mu}$ denotes the AOs which electrons in fragment $x$ can occupy. Through out the paper, the orbital indices are summed over but not fragment indices, covariant quantities are denoted with lower indices and contravariant quantities with upper indices.
+%RZK. Original text: They are expected to represent the maximally localized Wannier functions \cite{marzari1997maximally,he2001exponential}. This is not true: In addition to being spatially localized MLWFs satisfy other constraints, which are not imposed on CLMOs. I would remove this comparison unless you think it is absolutely necessary.
+
+% RZZK spin-polarized case in the SI, Gamma-point, replace fragment with center.
 
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{det}
@@ -160,13 +174,7 @@ The determinant of the MO overlap matrix, and maximum norm of the energy gradien
 \label{fig:det}
 \end{figure}
 
-The AO to MO matrix $\mathbf{T}$ thus has blocked form, and the identity operator on fragment $x$ is:
-%
-\bea
-\op{I}_{\bar{x}} = \ket{\chi_{\bar{x}\mu}} S^{\bar{x}\mu,\bar{x}\nu} \bra{ \chi_{\bar{x}\nu}}
-\eea
-%
-where $S^{\bar{x}\mu,\bar{x}\nu}$ is the matrix element of the inverse overlap matrix $S_{\bar{x}\mu,\bar{x}\nu} = \braket{ \chi_{\bar{x}\mu}}{ \chi_{\bar{x}\nu}} $. In the case of LMOs, the KS DFT energy functional can be written in a conventional way but with the one-electron density matrix [operator] modified to take into account nonorthogonality of LMOs
+In the case of LMOs, the KS DFT energy functional can be written in a conventional way but with the one-electron density matrix [operator] modified to take into account nonorthogonality of LMOs
 \bea \label{eq:dm}
 \op{R} = \sum_{x,y} \ket{\psi_{xi}} \sigma^{xi,yj} \bra{\psi_{yj}}
 \eea
@@ -319,10 +327,11 @@ To further demonstrate the accuracy of the energy calculation, we perform Monte 
 \label{fig:mc}
 \end{figure}
 
-
 \label{marker:conclusion} We develop a new DFT method based on LMOs. The notorious convergence problem is avoided by identifying the small but none-zero eigenvalues of the Hessian. These directions are projected out from the gradient and the preconditioner, and the remaining gradient shows fast convergence with PCG. This projection can be understood as a relaxed orthogonality constrain for the LMOs. This method works even when the interaction and covalency between fragments are strong. We demonstrate the accuracy and efficiency of the method on systems like dimond silicon, CdSe. We also show a MD simulation in liquid water containing protons, and show that it can deal with systems where chemical reactions happen.
 
 While many previous works~\cite{ZZZ} dealt with weakly-interacting fragments (e.g. molecules) the approach here represents the ultimate partitioning scheme.
+
+Add to discussion: One weakness of defining CLMO domains \emph{a priori} in this way is that at least rough idea about the electron distribution in a system is required to assign electrons to localization centers and domains. Such a procedure is, of course, not applicable to systems in which the exact bonding properties are unknown.
 
 RZK To add: The physical meaning of Eq~\ref{eq:approxq} is a modified orthogonality constrain for LMOs. Orthognality and locality has generally been considered as competing properties: strict orthogonality leads to decaying tails, and for LMOs no orthogonality constrains are imposed except for MOs within a fragment. However, this causes the convergence problem previously mentioned: LMOs without orthogonality tends to collapse. Although global orthogonality cannot be achieved, we suggest a local orthogonality constrain, that the projection of MOs onto each fragment $x$ should be orthogonal. Unlike the case for none-local MOs, not every physical state can be transformed into such state.
 
