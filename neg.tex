@@ -163,8 +163,7 @@ opens up a possibility of performing LS calculation with MOs, and corresponds ph
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{det}
 \caption{
-%RZK: use "with linepoints" to show dots. set xrange [0:50]. Use different aspect ratio: decrease height, keeping width the same
-The determinant of the MO overlap matrix, and maximum norm of the energy gradient. In Fig~\ref{fig:det} we show the determinant of the MO overlap matrix and the maximum norm of the energy gradient as a function of the minimization step. ZZZ-specify-XC-functional/DZVP optimization with the preconditioned conjugate gradient algorithm. Model linear systems of four hydrogen fluoride molecules interacting through hydrogen bonds.}
+The determinant of the MO overlap matrix, and maximum norm of the energy gradient. In Fig~\ref{fig:det} we show the determinant of the MO overlap matrix and the maximum norm of the energy gradient as a function of the minimization step. PBE/DZVP optimization with the preconditioned conjugate gradient algorithm. Model linear systems of four hydrogen fluoride molecules interacting through hydrogen bonds.}
 \label{fig:det}
 \end{figure}
 
@@ -260,9 +259,9 @@ The proposed explanation of the nature of the low-curvature modes is consistent 
 \includegraphics[width=0.5\textwidth]{residue}
 \caption{
 The norm of the projection of the small-curvature modes on the unoccupied subspace of a domain. 
-The calculations are performed for the block-diagonal ($R_c = 0$) state that serves as the initial guess in the SCF procedure. 
+%The calculations are performed for the block-diagonal ($R_c = 0$) state that serves as the initial guess in the SCF procedure. 
 %RZK: which state is this, is it really the block-diagonal state? 
-The ZZZ/ZZZ level of theory is used in all tests. 
+The PBE/DZVP level of theory is used in all tests. 
 Preconditioner eigenvectors with the eigenvalues smaller than 0.02~a.u. are chosen as small-curvature modes. 
 The following domains are considered: Ti$^{4+}$ ions in the TiO$_2$ rutile lattice, Cd$^{2+}$ ions in the CdSe lattice, Si atom in the diamond silicon lattice, H$_2$O molecule in a water tetramer system, hydrogen fluoride molecule in a linear tetramer system.}
 %RZK: Y axis labels: $\Delta$ instead of "Residue". X axis label "Eigenvector No.". X axis starts with 1. The legend should mirror the caption: "Ti$^{4+}$ in TiO$_2$" and so on. Include the same water system with atomic partitioning. Consider plotting more modes, including what we call category-2 modes.
@@ -300,7 +299,7 @@ As a result, the optimization procedure neglects low-curvature modes and the hop
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth]{convergence}
-\caption{The maximun norm of the energy gradient for the PBE/ZZZ-basis optimization of the CLMOs for silicon in the cubic diamond lattice. $R_c = ZZZ$~{\AA}. Modes with the preconditioner eigenvalues lower than ZZZ~a.u. are removed from the optimization. The difference in the ground state energy for the two methods is ZZZ a.u.}
+\caption{The maximun norm of the energy gradient for the PBE/DZVP-MOLOPT basis optimization of the CLMOs for Cdse lattice. $R_c = 1.1$~{\AA}. Modes with the preconditioner eigenvalues lower than 0.05~a.u. are removed from the optimization. The difference in the ground state energy for the two methods is ZZZ a.u.}
 %RZK: if results are sensitive to the filter threshold it is important to report convergence and DeltaE (legend) for different values of the threshold.
 %RZK: Legend: replace "2-step procedure" with "Block-diagonal projector"; replace "new method" with "Low-curvature projector" Axis: replace "Gradient Norm" with "Max. gradient norm"; replace "iterations" with "Iteration". Explain legend in the caption. Are we sufficiently well converged to report the difference in energy reliably? 
 \label{fig:convergence}
@@ -350,7 +349,7 @@ The procedure for selecting and projecting out the low-curvature modes is implem
 \begin{figure}
 \centering
 \includegraphics[width=0.45\textwidth]{timing}
-\caption{CLMO optimization timing benchmark for CdSe. The PBE/ZZZ-basis calculation with $R_c=0.9$~vDWR is done on 256 cores.}
+\caption{CLMO optimization timing benchmark for CdSe. The PBE/DZVP-MOLOPT basis calculation with $R_c=0.9$~vDWR is done on 256 cores.}
 \label{fig:scaling}
 \end{figure}
 
