@@ -57,7 +57,7 @@ Most LS methods explore the natural locality of the one-electron density matrix 
 % shao2003curvy: 10.1063/1.1558476
 They include the Fermi operator expansion~\cite{goedecker1994efficient,goedecker1995tight}, divide-and-conquer~\cite{yang1991direct,yang1991local}, and direct DM optimization methods~\cite{li1993density, shao2003curvy, vandevondele2012linear}. 
 However, the variational optimization of the DM is very inefficient for accurate DFT calculations which require many basis functions per atom~\cite{goedecker1999linear,vandevondele2012linear, arita2014stable, bowler2012methods, khaliullin2013efficient}.
-Therefore, the application of DM-based LS methods have been mostly restricted to minimal-basis tight-binding problems~\cite{Richters2014, example-of-a-large-scale-tight-binding}. 
+Therefore, the application of DM-based LS methods have been mostly restricted to minimal-basis tight-binding problems~\cite{Richters2014, goringe1997tight, ratcliff2018band}. 
 This issue is rectified in optimal-basis DM methods~\cite{skylaris2005introducing, nakata2015optimized, mohr2015accurate} that contract large basis sets into a small number of new localized functions and then optimize the DM in the contracted basis. 
 Despite becoming the most popular LS DFT, the efficiency of optimal-basis methods is hampered by the costly optimization of both the contracted orbitals and the DM~\cite{mostofi2003preconditioned}.
 
@@ -93,7 +93,7 @@ Unfortunately, the development of promising CLMO-based LS methods has been hinde
 %%%%%% Weitao Yang
 % Yang, W., 1997, Phys. Rev. B 56, 9294.
 
-In addition to poor convergence, a straightforward optimization of CLMOs, which cannot be constrained to stay both compact and orthogonal~\cite{stoll, RZZK}, often leads to a ``collapsed'' electronic state represented by linearly dependent occupied orbitals~\cite{ordejon1995linear}. 
+In addition to poor convergence, a straightforward optimization of CLMOs, which cannot be constrained to stay both compact and orthogonal~\cite{stoll1980use, RZZK}, often leads to a ``collapsed'' electronic state represented by linearly dependent occupied orbitals~\cite{ordejon1995linear}. 
 %
 %Furthermore it was also shown in \cite{ordejon1995linear} that the straightforward LMO calculation without using a new energy functional may end up in a set of MOs that are collapsing. And the new energy functionals may lead to multiple minima \cite{kim1995total}. (Perhaps our formulation also has the multiple minima problem)
 Figure~\ref{fig:det} shows that such a collapse, indicated by the vanishing determinant of the CLMO overlap matrix, is associated with 
@@ -339,7 +339,7 @@ The procedure for selecting and projecting out the low-curvature modes is implem
 \includegraphics[width=0.35\textwidth]{Si_conv}
 \caption{Energy from the low-curavture projector and the dependence on the localization radii $R_c$ for (a) PBE/DZVP calculation for CdSe in a hexagonal wurtzite lattice, (b) BLYP/TZV2P calculation for liquid water with atomic partitioning, (c) PBE/DZVP calculation for cubic diamond phase of silicon. The convergence criteria is $\vert\vert G\vert\vert_{\text{max}} < 10^{-5}$. Zero energy is set at the block-diagonal reference. Dashed line shows the reference energy of conventional DFT calculation(E$_{\text{DFT}}$) without localizatioin constrains(R$_c\rightarrow \infty$). \\
 Inset: Low-curvature-projector(E$_{\text{LCP}}$) energy dependence on the low-curvature threshold at a fixed $R_c$, the zero energy is set to be E$_{\text{DFT}}$. }
-%Yifei: Used kJ/mol for all energy units. I also convered length unit vdW radii to angstrom by looking up the data base. However the original cutoff is different for different atoms, which I didn't mention for simplicity.
+%Yifei: Used kJ/mol for most energy units. I also convered length unit vdW radii to angstrom by looking up the data base. However the original cutoff is different for different atoms, which I didn't mention for simplicity.
 \label{fig:accuracy}
 \end{figure}
 
