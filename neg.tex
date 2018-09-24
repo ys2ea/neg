@@ -53,21 +53,21 @@ To overcome this limitation, substantial efforts have been directed to the devel
 %RZZK: perhaps it is worth mentioning that construction of the effective KS Hamiltonian is already linear, the current bottleneck is a cubically-scaling procedure for the optimization of electronic degrees of freedom.
 
 In LS DFT methods, the delocalized eigenstates of the effective KS Hamiltonian must be replaced with an alternative set of \emph{local} electronic descriptors. 
-Most LS methods explore the natural locality of the one-electron density matrix (DM)~\cite{li1993density, lee1996linear, li2003density, vandevondele2012linear, Kussmann2013, Aarons2016, shao2003curvy}.  
+Most LS methods explore the natural locality of the one-electron density matrix (DM)~\cite{li1993density, lee1996linear, li2003density, vandevondele2012linear, kussmann2013linear, aarons2016perspective, shao2003curvy}.  
 % shao2003curvy: 10.1063/1.1558476
 They include the Fermi operator expansion~\cite{goedecker1994efficient,goedecker1995tight}, divide-and-conquer~\cite{yang1991direct,yang1991local}, and direct DM optimization methods~\cite{li1993density, shao2003curvy, vandevondele2012linear}. 
-However, the variational optimization of the DM is very inefficient for accurate DFT calculations which require many basis functions per atom~\cite{goedecker1999linear,a:ls-dm-sign, Arita2014, a:ls-rev-2012, a:almo-ls}.
+However, the variational optimization of the DM is very inefficient for accurate DFT calculations which require many basis functions per atom~\cite{goedecker1999linear,vandevondele2012linear, arita2014stable, bowler2012methods, khaliullin2013efficient}.
 Therefore, the application of DM-based LS methods have been mostly restricted to minimal-basis tight-binding problems~\cite{Richters2014, example-of-a-large-scale-tight-binding}. 
-This issue is rectified in optimal-basis DM methods~\cite{Skylaris2005, Nakata2015, Mohr2015} that contract large basis sets into a small number of new localized functions and then optimize the DM in the contracted basis. 
-Despite becoming the most popular LS DFT, the efficiency of optimal-basis methods is hampered by the costly optimization of both the contracted orbitals and the DM~\cite{a:ls-onetep-2003}.
+This issue is rectified in optimal-basis DM methods~\cite{skylaris2005introducing, nakata2015optimized, mohr2015accurate} that contract large basis sets into a small number of new localized functions and then optimize the DM in the contracted basis. 
+Despite becoming the most popular LS DFT, the efficiency of optimal-basis methods is hampered by the costly optimization of both the contracted orbitals and the DM~\cite{mostofi2003preconditioned}.
 
 From the computational point of view, a direct variation of one-electron orbitals that are strictly localized within predefined spatial regions is preferable because LS can be achieved with significantly fewer variables. %[RZZK: at least for systems with finite band gap]. 
 The computational advantages of orbitals-only LS DFT are especially pronounced in accurate calculations that require many basis functions per atom. 
-Strictly localized orbitals are also advantageous from the physical point of view because they provide clear, chemically meaningful, transferable description of interactions between atoms or molecules~\cite{RZZK-weitao, stoll, khaliullin2007unravelling, khaliullin2008analysis}. 
+Strictly localized orbitals are also advantageous from the physical point of view because they provide clear, chemically meaningful, transferable description of interactions between atoms or molecules~\cite{RZZK-weitao, stoll1980use, khaliullin2007unravelling, khaliullin2008analysis}. 
 %
 Such orbitals are known under different names --- localized wave functions~\cite{ordejon1995linear}, nonorthogonal Wannier functions~\cite{weitao,RZZK}, absolutely localized orbitals~\cite{stoll1980use}, orbitals on compact support~\cite{RZZK}, non-orthogonal localized molecular orbital~\cite{weitao}. In this work, they will be referred to as compact localized molecular orbitals (CLMOs) to emphasize that the expansion coefficients of these orbitals in some localized basis set (e.g. numerical atomic orbitals, Gaussian orbitals, psync or RZZK-spline functions) are constrained to be precisely zero outside orbital's predefined localization region.
 % RZZK: While we used ALMO -- original name given to these orbitals by Stoll et al. -- to refer to these oribtals we prefer using CLMO in this work to distinguish them from block-diagonal version of ALMO popularized in Head-Gordon et al.  
-Unfortunately, the development of promising CLMO-based LS methods has been hindered~\cite{a:weitao-yang-2013,a:ls-tsuchida-aomm, fattebert-recent} because of inherently difficult variational optimization of CLMOs~\cite{a:ls-mauri-galli-car-1993,ordejon1995linear,a:ls-rev-1999, fattebert2004linear, peng2013effective, a:ls-tsuchida-aomm, weitao-yang}. 
+Unfortunately, the development of promising CLMO-based LS methods has been hindered~\cite{peng2013effective,tsuchida2008ab, fattebert-recent} because of inherently difficult variational optimization of CLMOs~\cite{mauri1993orbital,ordejon1995linear,goedecker1999linear, fattebert2004linear, peng2013effective, tsuchida2008ab, weitao-yang}. 
 %There are also other undesirable features, manifesting depending on a particular method: multiple minima, slow convergence with large number of iterations, position of localization centers must be chosen a priori, runaway solutions, charge-conservation issues. These are not exhibited by DM-based methods (Section 3.E of Ref.~\onlinecite{goedecker1999linear}).
 %
 %Complete CLMO references:
@@ -132,8 +132,8 @@ In the next step, each center is assigned a predefined element-specific radius $
 \op{I}_{\bar{x}} = \ket{\chi_{\bar{x}\mu}} S^{\bar{x}\mu,\bar{x}\nu} \bra{ \chi_{\bar{x}\nu}},
 \eea
 %
-where $S^{\bar{x}\mu,\bar{x}\nu}$ is a matrix element of the inverse overlap matrix $S_{\bar{x}\mu,\bar{x}\nu} = \braket{ \chi_{\bar{x}\mu}}{ \chi_{\bar{x}\nu}} $. Note that the conventional tensor notation is used to work with the nonorthogonal orbitals~\cite{RZZK-tensor}: covariant quantities are denoted with subscripts, contravariant quantities with superscripts, and summation is implied over the same indices. However, there is one important exception that the Einstein convention does not imply summation over centers and domains. 
-%RZZK-tensor: J. Chem. Phys. 108, 616, 1998.
+where $S^{\bar{x}\mu,\bar{x}\nu}$ is a matrix element of the inverse overlap matrix $S_{\bar{x}\mu,\bar{x}\nu} = \braket{ \chi_{\bar{x}\mu}}{ \chi_{\bar{x}\nu}} $. Note that the conventional tensor notation is used to work with the nonorthogonal orbitals~\cite{head1998tensor}: covariant quantities are denoted with subscripts, contravariant quantities with superscripts, and summation is implied over the same indices. However, there is one important exception that the Einstein convention does not imply summation over centers and domains. 
+
 %
 By construction a basis set function may belong to several localization domains. Therefore, generally speaking domains overlap:
 %
@@ -153,12 +153,11 @@ Thus this approximation imposes a blocked structure on the matrix of MO coeffici
 %
 \bea
 \ket{\psi_{xi}} = \ket{\chi_{\bar{x}\mu}} {T^{\bar{x}\mu}}_{xi},
-\label{eq:LMO}
+\label{eq:LMOproj}
 \eea
 %
 opens up a possibility of performing LS calculation with MOs, and corresponds physically to electrons localized within radius $R_c$ from their centers. RZZK: comment how accurate this apprx is expected to be for finite-gap and metallic systems.
 
-%RZK. Original text: They are expected to represent the maximally localized Wannier functions \cite{marzari1997maximally,he2001exponential}. This is not true: In addition to being spatially localized MLWFs satisfy other constraints, which are not imposed on CLMOs. I would remove this comparison unless you think it is absolutely necessary.
 
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{det}
@@ -182,7 +181,7 @@ where \op{H} is the Kohn-Sham Hamiltonian, $\rho(\br) = 2\bra{\br}\op{R}\ket{\br
 %
 where $\sigma^{xi,yj}$ is a matrix element of the inverse of the CLMO overlap matrix $\sigma_{xi,zk} = \braket{ \psi_{xi}}{ \psi_{zk}} $. %The one-electron density operator is $\op{D} = 2\op{R}$. 
 
-A straightforward [direct?] minimization of the energy functional wrt to the variational degrees of freedom --- $\mathbf{T}$ elements --- with a preconditioned conjugate gradient algorithm (PCG) has proven a reliable low-cost method for fully delocalized orbitals ($R_c \rightarrow \infty$)~\cite{parrinello-galli} and completely localized orbitals ($R_c = 0$)~\cite{khaliullin2013efficient}. The PCG energy minimizer requires iterative evaluation of the energy gradient
+A straightforward [direct?] minimization of the energy functional wrt to the variational degrees of freedom --- $\mathbf{T}$ elements --- with a preconditioned conjugate gradient algorithm (PCG) has proven a reliable low-cost method for fully delocalized orbitals ($R_c \rightarrow \infty$)~\cite{galli1992large} and completely localized orbitals ($R_c = 0$)~\cite{khaliullin2013efficient}. The PCG energy minimizer requires iterative evaluation of the energy gradient
 %
 \bea
 {G_{\bar{x}\mu}}^{xi} \equiv \frac{\partial E}{\partial {T^{\bar{x}\mu}}_{xi}} = 4 \bra{\chi_{\bar{x}\mu}} (\op{I}-\op{R}) \op{H} \ket{\psi^{xi}}
@@ -209,7 +208,7 @@ P_{\bar{x}\mu,\bar{x}\nu} {A^{\bar{x}\nu}}_{xp} =  S_{\bar{x}\mu,\bar{x}\kappa} 
 \eea
 %
 reveals the origin of this and other closely related previously reported problems. The eigenvalues, which approximate the energy curvature along the optimization direction \ket{d_{xp}} given by the corresponding eigenvector, ${A^{\bar{x}\nu}}_{xp} \equiv \braket{\chi^{\bar{x}\nu}}{d_{xp}}$, can be divided into three categories according to their magnitudes. Zero eigenvalues in the first category represent the optimization directions towards occupied orbitals localized completely within the same domain (Figure~\ref{fig:modes}, case A). As expected the energy is invariant along these occupied-occupied mixing modes. The second category includes large nonzero eigenvalues that represent the optimization directions towards unoccupied orbitals (Figure~\ref{fig:modes}, case B) of the domain. These two categories are the only ones present in the rapidly converging optimization of fully delocalized orbitals ($R_c \rightarrow \infty$) and completely localized orbitals ($R_c = 0$). The eigenvalues classified as the third category are extremely small but nonzero. They appear only for finite $R_c$ when orbitals on different domains share basis set functions. 
-The optimization along these low-curvature nearly-invariant directions is difficult to converge because various analytical approximations (e.g. approximate Hessian, quadratic linear search) and numerical noise (e.g. finite DFT grids) make calculations too imprecise. Thus the presence of the low-curvature modes represents the major barrier to the practical use of promising orbital-based LS DFT methods.
+The optimization along these low-curvature nearly-invariant directions is difficult to converge because various analytical approximations (e.g. approximate Hessian, quadratic linear search) and numerical noise (e.g. finite DFT grids) make calculations too imprecise. Thus the presence of the low-curvature modes represents the major barrier to the practical use of promising orbital-based LS DFT methods. Fig~\ref{sfig:hesseig} int the supplementary material shows an example of such small eigenvalues.
 
 \begin{figure*}
 \centering
@@ -226,6 +225,8 @@ It has been suggested previously~\cite{goedecker1999linear} that the sluggish op
 Although this might indeed present a problem for a series of approximate functionals~\cite{Galli} the density matrix used in this work is constructed with the inverse of the overlap matrix and, therefore, is properly idempotent and exactly invariant to the mixing among occupied states. 
 We instead suggest that the low-curvature modes correspond to the ``almost'' (RZZK: is it better to call them mixed modes?) occupied directions illustrated in Figure~\ref{fig:modes}, case C. 
 This hypothesis can be verified by calculating the norm of the component of the small-curvature directions \ket{d_{\bar{x}p}} in the unoccupied space:
+
+%Yifei: in reality, \op{I}_{\bar{x}} is not used but instead an operator to pick out only indices belonging to domain x
 %
 \bea
 \label{eq:residue}
@@ -248,7 +249,7 @@ and $\sigma_{\bar{x}}$ is the overlap matrix of $\bar{x}$-projected orbitals
 \eea
 %
 Our hypothesis implies that $\Delta$ should be small for all small-curvature eigenvectors. 
-Figure~\ref{fig:projection} shows that indeed the small-curvature modes indeed lie within the occupied space for a variety of materials. 
+Figure~\ref{fig:projection} shows that indeed the small-curvature modes indeed lie within the occupied space for a variety of materials. See supplementary material for more details. 
 It is also interesting to note that the ``unoccupied'' fraction of the low-curvature modes increases with increasing strength of intercenter electron delocalization, that is, with the degree of covalency of interatomic bonding. %RZZK: detailed expalnation why this is so.
 Thus the optimization along the low-curvature modes mixes orbitals that are almost completely but not fully occupied (RZZK: mixed is a better definition). Unsurprisingly, such varying orbitals along these directions often leads to their collapse. 
 
@@ -259,11 +260,11 @@ The proposed explanation of the nature of the low-curvature modes is consistent 
 \includegraphics[width=0.5\textwidth]{residue}
 \caption{
 The norm of the projection of the small-curvature modes on the unoccupied subspace of a domain. 
-%The calculations are performed for the block-diagonal ($R_c = 0$) state that serves as the initial guess in the SCF procedure. 
-%RZK: which state is this, is it really the block-diagonal state? 
-The PBE/DZVP level of theory is used in all tests. 
+The BLYP/TZV2P level of theory is used for water and PBE/DZVP in all other tests. 
 Preconditioner eigenvectors with the eigenvalues smaller than 0.02~a.u. are chosen as small-curvature modes. 
-The following domains are considered: Ti$^{4+}$ ions in the TiO$_2$ rutile lattice, Cd$^{2+}$ ions in the CdSe lattice, Si atom in the diamond silicon lattice, H$_2$O molecule in a water tetramer system, hydrogen fluoride molecule in a linear tetramer system.}
+The following localization ceneters are considered: Ti$^{4+}$ ions in the TiO$_2$ rutile lattice, Cd$^{2+}$ ions in the CdSe Wurtzite lattice, Si atom in the diamond silicon lattice, O$^{2-}$ in a water tetramer system, hydrogen fluoride molecule in a linear tetramer system.}
+
+%Yifei: Localization centers are listed, domains also include neiboring atoms as well, which are for each system considered: Ti$^{4+}$ and 4 O$^{2-}$, Cd$^{2+}$ and 3 Se$^{2-}$, 5 Si atoms, two water molecules, 3 HF molecules
 %RZK: Y axis labels: $\Delta$ instead of "Residue". X axis label "Eigenvector No.". X axis starts with 1. The legend should mirror the caption: "Ti$^{4+}$ in TiO$_2$" and so on. Include the same water system with atomic partitioning. Consider plotting more modes, including what we call category-2 modes.
 % RZK alternative plot: Delta vs preconditioner eigenvalue. Dots of different colors: one color for one material. The same set of materials.
 \label{fig:projection}
@@ -294,20 +295,17 @@ where $\Theta$ is zero if the corresponding mode is a low-curvature mode and one
 %
 and the projected gradient and preconditioner are used in the PCG algorithm. 
 
-As a result, the optimization procedure neglects low-curvature modes and the hopefully small energy changes associated with them. Figure~\ref{fig:convergence} shows that the new optimization procedure becomes robust even for a challenging case of atomic partitioning of the diamond silicon lattice (Figure~\ref{fig:convergence}). At the same time, the final energy is close to the CLMOs energy obtained variationally using the two-step method of Ref.~\cite{khaliullin2013efficient}. 
+As a result, the optimization procedure neglects low-curvature modes and the hopefully small energy changes associated with them. Figure~\ref{fig:convergence} shows that the new optimization procedure becomes robust for a challenging case of atomic partitioning of the hexagonal CdSe lattice (Figure~\ref{fig:convergence}). At the same time, the final energy is close to the CLMOs energy obtained variationally using the two-step method of Ref.~\cite{khaliullin2013efficient}. 
 
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth]{convergence}
-\caption{The maximun norm of the energy gradient for the PBE/DZVP-MOLOPT basis optimization of the CLMOs for Cdse lattice. $R_c = 1.1$~{\AA}. Modes with the preconditioner eigenvalues lower than 0.05~a.u. are removed from the optimization. The difference in the ground state energy for the two methods is ZZZ a.u.}
-%RZK: if results are sensitive to the filter threshold it is important to report convergence and DeltaE (legend) for different values of the threshold.
+\caption{The maximun norm of the energy gradient for the PBE/DZVP-MOLOPT basis optimization of the CLMOs for Cdse lattice. $R_c = 3.5$~{\AA}. Modes with the preconditioner eigenvalues lower than 0.05~a.u. are removed from the optimization. The difference in the ground state energy for the two methods is 0.03 kJ/mol per Cd atom.}
+
 %RZK: Legend: replace "2-step procedure" with "Block-diagonal projector"; replace "new method" with "Low-curvature projector" Axis: replace "Gradient Norm" with "Max. gradient norm"; replace "iterations" with "Iteration". Explain legend in the caption. Are we sufficiently well converged to report the difference in energy reliably? 
 \label{fig:convergence}
 \end{figure}
 
-\new Yifei, there are further tests required (red): 
-(A) The residue should be computed using a different projector. Currently all occupied neighbor orbitals are given the full norm on $\bar{x}$ and removed from \ket{d_{\bar{x}p}}. This is not what we intended to do. We would like to remove only orbitals with a significant presence on $\bar{x}$.
-(B) Convergence and energy tests must be reported for different values of the low-curvature threshold, not just different values of Rc.\old
 
 STOPPED HERE: 
 
@@ -332,35 +330,36 @@ As stated before, the filterd directions should be primarily occupied-occupied m
 
 \label{marker:results}
 
-The procedure for selecting and projecting out the low-curvature modes is implemented in the CP2K package\cite{cp2kgeneral}. which uses the mixed Gaussian and plane wave method\cite{vandevondele2005quickstep}, and is an ideal platform for LS method. The optimization scheme is applied to systems with small band gap which are typically difficult for LS methods. The inversion of MO overlap matrix is carried out using Hotelling method \cite{hotelling1943some} which is linear scaling when the overlap matrix is sparse. Fig~\ref{fig:accuracy} shows the energy as a function of $R_c$ for several different systems: (a) CdSe of 768 atoms. (b) 64 water molecules, where each fragment is an atoms, and there are strong interaction and significant electron delocalization between fragments. (c) dimond Si of 512 atoms. We note that upon applying the filter $Q^x$ on the gradient, the final energy is no longer fully variational: the gradient is only zero in diretions that significantly change the energy. It also implies that the energy will depend on the optimization path. However, it is clear from Fig~\ref{fig:accuracy} that the energy converges to the DFT value as a function of cutoff, and the error mentioned is neglectable. 
+The procedure for selecting and projecting out the low-curvature modes is implemented in the CP2K package\cite{cp2kgeneral}. which uses the mixed Gaussian and plane wave method\cite{vandevondele2005quickstep}, and is an ideal platform for LS method. The optimization scheme is applied to systems with small band gap which are typically difficult for LS methods. The inversion of MO overlap matrix is carried out using Hotelling method \cite{hotelling1943some} which is linear scaling when the overlap matrix is sparse. Fig~\ref{fig:accuracy} shows the energy as a function of $R_c$ for several different systems: (a) CdSe on hexagonal wurtzite lattice with 768 atoms. (b) 64 water molecules, where each fragment is an atoms, and there are strong interaction and significant electron delocalization between fragments. (c) dimond Si of 512 atoms. We note that upon applying the filter $Q^x$ on the gradient, the final energy is no longer fully variational: the gradient is only zero in diretions that significantly change the energy. It also implies that the energy will depend on the optimization path. However, it is clear from Fig~\ref{fig:accuracy} that the energy converges to the DFT value as a function of cutoff, and the error mentioned is neglectable. 
 
 \begin{figure}
 \centering
-\includegraphics[width=0.35\textwidth]{CdSe}
-\includegraphics[width=0.35\textwidth]{H2O}
-\includegraphics[width=0.35\textwidth]{Si}
-\caption{Energy dependence on the localization radii $R_c$ for (a) PBE/DZVP calculation for CdSe (ZZZ-specify-the-phase) lattice, (b) BLYP/TZV2P calculation for liquid water with atomic partitioning, (c) PBE/DZVP calculation for cubic diamond phase of silicon. The convergence criteria is $\vert\vert G\vert\vert_{\text{max}} < 10^{-5}$.}
-%RZK: Energy scale: use kJ/mol or eV per atom/molecule; set zero energy at the block-diagonal reference; check number of atoms for silicon because the delocalization energy is unrealistic. Legend: replace "Block-diagonal energy" with "R_c = 0 reference"; "Exact energy" with "R_c = \Infty reference"; "Neglect method" with "Low-curvature projector". Caption: Specify the low-curvature threshold. 
+\includegraphics[width=0.35\textwidth]{CdSe_conv}
+\includegraphics[width=0.35\textwidth]{H2O_conv}
+\includegraphics[width=0.35\textwidth]{Si_conv}
+\caption{Energy from the low-curavture projector and the dependence on the localization radii $R_c$ for (a) PBE/DZVP calculation for CdSe in a hexagonal wurtzite lattice, (b) BLYP/TZV2P calculation for liquid water with atomic partitioning, (c) PBE/DZVP calculation for cubic diamond phase of silicon. The convergence criteria is $\vert\vert G\vert\vert_{\text{max}} < 10^{-5}$. Zero energy is set at the block-diagonal reference. Dashed line shows the reference energy of conventional DFT calculation(E$_{\text{DFT}}$) without localizatioin constrains(R$_c\rightarrow \infty$). \\
+Inset: Low-curvature-projector(E$_{\text{LCP}}$) energy dependence on the low-curvature threshold at a fixed $R_c$, the zero energy is set to be E$_{\text{DFT}}$. }
+%Yifei: Used kJ/mol for all energy units. I also convered length unit vdW radii to angstrom by looking up the data base. However the original cutoff is different for different atoms, which I didn't mention for simplicity.
 \label{fig:accuracy}
 \end{figure}
 
-\label{marker:performance}To test the computational efficiency of the newly designed method, we compared its performance to the orbital transformation (OT) optimizer \cite{weber2008direct,vandevondele2003efficient} --- a well-optimized low-prefactor cubic scaling DFT method for conventional fully delocalized orbitals. The calculation is done for CdSe (ZZZ what phase of CdSe?) of different system sizes. $R_c$ is set to 0.9 multiples of atomic van der Waals radii, which is large enough to accurately describe the electronic structure of the system (Figure~\ref{fig:accuracy}). Figure~\ref{fig:scaling} demonstrates that our method is asymptotically LS. The LS regime is achieved when the MO overlap matrix and its inverse are sufficiently sparse. For a dense system like CdSe it takes on the order of $\sim$3000 atoms. RZZK: should we compare to a typical DM method?
+\label{marker:performance}To test the computational efficiency of the newly designed method, we compared its performance to the orbital transformation (OT) optimizer \cite{weber2008direct,vandevondele2003efficient} --- a well-optimized low-prefactor cubic scaling DFT method for conventional fully delocalized orbitals. The calculation is done for hexagonal CdSe of different system sizes. $R_c$ is set to 3.5~{\AA}, which is large enough to accurately describe the electronic structure of the system (Figure~\ref{fig:accuracy}). Figure~\ref{fig:scaling} demonstrates that our method is asymptotically LS. The LS regime is achieved when the MO overlap matrix and its inverse are sufficiently sparse. For a dense system like CdSe it takes on the order of $\sim$3000 atoms. RZZK: should we compare to a typical DM method?
 
 \begin{figure}
 \centering
 \includegraphics[width=0.45\textwidth]{timing}
-\caption{CLMO optimization timing benchmark for CdSe. The PBE/DZVP-MOLOPT basis calculation with $R_c=0.9$~vDWR is done on 256 cores.}
+\caption{CLMO optimization timing benchmark for CdSe. The PBE/DZVP-MOLOPT basis calculation with $R_c=3.5$~{\AA} is done on 256 cores.}
 \label{fig:scaling}
 \end{figure}
 
 
-%\label{marker:moldyn}To further demonstrate the accuracy of the force and energy calculation, we run a molecular dynamics (MD) simulation on a system of 62 water molecules with 2 H$^+$ atoms. The 2 protons will hop around through OH covalent bond breaking and reforming. We show in Fig~\ref{fig:md} the conserved quantity and the potential energy in a MD run, proving that a stable simulation can be achieved with our method. We note that the Hellmann–Feynman theorem\cite{feynman1939forces} is used for the calculation of the force, this is in general only true when the energy is full variational, which is not true in our case. But the MD simulation further demonstrated that this error is neglectable, a conclusion already drawn from Fig~\ref{fig:accuracy}.
+\label{marker:moldyn} The accuracy of force calculation is crucial to a stable molecular dynamics (MD) simulation. A preliminary test of our method is done on a system of 62 water molecules with 2 H$^+$ atoms. The 2 protons will hop around through OH covalent bond breaking and reforming. Here each atom is a localization center, resulting strong covalent interaction and bond breaking between fragments. We show in Fig~\ref{fig:md} the conserved quantity and the potential energy in a MD run of 2 picoseconds. We note that the Hellmann--Feynman theorem\cite{feynman1939forces} is used for the calculation of the force, this is in general only true when the energy is full variational, which is not true in our case. This is the reason of noise of constant quantity in the simulation. While this is just a preliminary test of the method and force evaluation is not the focus of this paper, we believe modifications to the MD algorithm(for example, the modified Langevin integrator method in Ref~\onlinecite{scheiber2018communication}) could further stablize the calculation.
 
-%\begin{figure}
-%\includegraphics[width=0.45\textwidth]{const}
-%\caption{The total energy (kinetic plus potential) as a function of time, computed with linear scaling method and OT. Inset: the potential energy (Pot) and constant quantity (Const Qty) for linear scaling method.}
-%\label{fig:md}
-%\end{figure}
+\begin{figure}
+\includegraphics[width=0.45\textwidth]{const.eps}
+\caption{The potential energy (Pot) and constant quantity (Const Qty) during a MD simulation using low-curvature-projector method with NVT ensemble. The temperature of simulations was set to 298~K and was controlled by a canonical velocity re-scaling thermostat\cite{bussi2007canonical} with the coupling time constant set to 50 fs.}
+\label{fig:md}
+\end{figure}
 
 To further demonstrate the accuracy of the energy calculation, we perform Monte Carlo (MC) simulation of a defected dimond silicon lattice, where 2 neighboring silicon atoms are replaced by 2 carbon atoms. The resulting silicon-silicon radial distribution function (RDF) is shown in Fig~\ref{fig:mc}. For comparison we also show the RDF calculated from molecular dynamics simulation using OT. 
 
@@ -385,6 +384,13 @@ RZZK: The physical meaning of Eq~\ref{eq:approxq} is a modified orthogonality co
 
 \section{Supplemental Material}
 
+\setcounter{equation}{0}
+\setcounter{figure}{0}
+
+\renewcommand{\theequation}{S\arabic{equation}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+
+\subsection{Details of matrix equations}
 Matrix equations clarify more compact operator expression used in the main text. 
 
 %The energy:
@@ -440,8 +446,10 @@ or
 \eea
 %
 
-The preconditioner for domain $\bar{x}$
+The preconditioner for domain $\bar{x}$ 
+
 %
+\small {
 \bea
 P_{\bar{x}\bar{x}} &=& s_x \left[(\mathbf{I}-\mathbf{SR}) \mathbf{H}(\mathbf{I}-\mathbf{RS}) + (\mathbf{I}-\mathbf{SRS})\right]_{\bar{x}\bar{x}} 
 \eea 
@@ -456,7 +464,35 @@ $\bar{x}$-coefficients of the $y$-centered orbitals projected onto $\bar{x}$-spa
 \op{I}_{\bar{x}} \ket{\psi_{yi}}  &=& \ket{\chi_{\bar{x}\mu}} S^{\bar{x}\mu,\bar{x}\nu} \braket{ \chi_{\bar{x}\nu}}{ \chi_{\bar{y}\lambda}}\, {T^{\bar{y}\lambda}}_{yi} = \nonumber \\
  &=& \ket{\chi_{\bar{x}\mu}} \left[ S^{\bar{x}\mu,\bar{x}\nu} S_{\bar{x}\nu,\bar{y}\lambda} {T^{\bar{y}\lambda}}_{yi} \right]
 \eea 
+}
 %
 Note that coefficients outside $\bar{x}$ may be nonzero but we do not need them.
 
+\subsection{Generalized eigenvalues of Hessian, and physical meaning of low-curvature-projector}
+
+Here we further illustrate the origin of slow converging modes by looking at the (generalized) eigenvalues of the Hessian in the calculation of a realistic system. Fig~\ref{sfig:hesseig} shows the cases of (a)completely delocalied calculation, where the eigenvalues are either 0(corresponding to a occupied-occupied mixing) or significanly large(occupied-virtual mixing). (b) Straight forward CLMO calculation, where the eigenvalue spectrum is continuous and intermediate modes exsit. (c) Low-curvature-projector method, where the small and large eigenvalues are again seperated.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{Hesseig}
+\caption{Eigenvalue spectra of Hessian during the optimization. The calculation is done on hexagonal CdSe lattice with 8 atoms. For the CLMO calculations the localization center is Cd$^{2+}$ ion and the domain includes one Cd$^{2+}$ and 3 Se$^{-2}$. For delocalized calculation the Hessian is for the complete system (only a portion of the eigenvalues are shown to save space). For the straight forward CLMO calculation without low-curvature-projector, the calculation won't converge and the Hessian is chosen at a stage where the energy is close to the ground state, for the other 2 cases the Hessian is chosen at convergence. PBE/DZVP level of theory is used for all cases.}
+\label{sfig:hesseig}
+\end{figure}
+
+Here we give more details on our hypothesis in Eq.~\ref{eq:C}. The states $\ket{\psi_{yi}}$ are chosen so that: 
+\bea
+\braket{\psi_{yj}}{\psi_{yj}} - \bra{\psi_{yj}}\op{I_{x}}\ket{\psi_{yj}} < t
+\eea
+
+Fig~\ref{sfig:t_delta} shows that as $t$ increases and more states are chosen, $\Delta_{\bar{x}p}$ in Eq~\ref{eq:residue} gets smaller. The assumption is good for most weakly interacting materials but for Si where electrons are less localized the assumption is less accurate. Note however the validity of our method doesnot depend on this assumption.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.3\textwidth]{t_cdse_residue}
+\includegraphics[width=0.3\textwidth]{t_tio2_residue}
+\includegraphics[width=0.3\textwidth]{t_water_residue}
+\includegraphics[width=0.3\textwidth]{t_si_residue}
+\caption{$\Delta_{\bar{x}p}$ as a function of $t$, for materials studied in Fig~\ref{fig:projection}. As $t$ increases, $\Delta_{\bar{x}p}$ quickly reduces. Our assumption works well for most system except for Si.}
+\label{sfig:t_delta}
+\end{figure}
 \end{document}
