@@ -101,6 +101,7 @@ Figure~\ref{fig:det} shows that such a collapse, indicated by the vanishing dete
 the convergences problem. 
 
 Several/Numerous efforts were made to resolve these problems. A series of work have focused on using new energy functionals~\cite{mauri1993orbital,kim1995total,ordejon1995linear} that avoid using the inverse of the CLMO overlap matrix. 
+
 %Inclusion of unoccupied orbitals~\cite{kim1995total} or extra optimization variables~\cite{burger2008linear,peng2013effective} has been proposed to mitigate convergence problems. 
 In Ref.~\onlinecite{burger2008linear} the authors proposed to apply the absolute energy minimum variational principle~\cite{yang1997absolute} by introducing an extra set of variables. And in a more recent work a preconditioner is used to speed up the convergence~\cite{peng2013effective}.
 In an alternative approach, CLMOs can also be described on a real-space mesh~\cite{fattebert2004linear,fattebert2006linear}, and the energy can be evaluated with finite difference. The authors were also able to perform large scale molecular dynamics simulations~\cite{osei2014accurate}.
@@ -109,6 +110,7 @@ In an alternative approach, CLMOs can also be described on a real-space mesh~\ci
 %Energy change as the convergence test~\cite{fattebert2000towards, kim1995total, ordejon1995linear}. Not a good convergence criterion. Does not indicate true convergence as shown in Figure~RZZK. Leads to instabilities in AIMD.
 
 We note that in the previously mentioned works, the convergence criteria are always the energy change. However, in this work we use a stronger convergence criteria which is maximum norm of the gradient, which excludes the possibility that the energy enters an unstable plateau during the optimization.
+
 %The origins of the convergence problem have not been described. 
 %Dramatically increased computational cost is one reason.
 
@@ -267,10 +269,8 @@ The norm of the projection of the small-curvature modes on the unoccupied subspa
 The BLYP/TZV2P level of theory is used for water and PBE/DZVP in all other tests. 
 Preconditioner eigenvectors with the eigenvalues smaller than 0.02~a.u. are chosen as small-curvature modes. 
 The following localization ceneters are considered: Ti$^{4+}$ ions in the TiO$_2$ rutile lattice, Cd$^{2+}$ ions in the CdSe Wurtzite lattice, Si atom in the diamond silicon lattice, O$^{2-}$ in a water tetramer system, hydrogen fluoride molecule in a linear tetramer system.}
-
 %Yifei: Localization centers are listed, domains also include neiboring atoms as well, which are for each system considered: Ti$^{4+}$ and 4 O$^{2-}$, Cd$^{2+}$ and 3 Se$^{2-}$, 5 Si atoms, two water molecules, 3 HF molecules
 %RZK: Y axis labels: $\Delta$ instead of "Residue". X axis label "Eigenvector No.". X axis starts with 1. The legend should mirror the caption: "Ti$^{4+}$ in TiO$_2$" and so on. Include the same water system with atomic partitioning. Consider plotting more modes, including what we call category-2 modes.
-% RZK alternative plot: Delta vs preconditioner eigenvalue. Dots of different colors: one color for one material. The same set of materials.
 \label{fig:projection}
 \end{figure}
 
