@@ -101,10 +101,14 @@ Figure~\ref{fig:det} shows that such a collapse, indicated by the vanishing dete
 the convergences problem. 
 
 Several/Numerous efforts were made to resolve these problems. A series of work have focused on using new energy functionals~\cite{mauri1993orbital,kim1995total,ordejon1995linear} that avoid using the inverse of the CLMO overlap matrix. 
-Inclusion of unoccupied orbitals~\cite{kim1995total} or extra optimization variables~\cite{burger2008linear,peng2013effective} has been proposed to mitigate convergence problems. 
+%Inclusion of unoccupied orbitals~\cite{kim1995total} or extra optimization variables~\cite{burger2008linear,peng2013effective} has been proposed to mitigate convergence problems. 
+In Ref.~\onlinecite{burger2008linear} the authors proposed to apply the absolute energy minimum variational principle~\cite{yang1997absolute} by introducing an extra set of variables. And in a more recent work a preconditioner is used to speed up the convergence~\cite{peng2013effective}.
+In an alternative approach, CLMOs can also be described on a real-space mesh~\cite{fattebert2004linear,fattebert2006linear}, and the energy can be evaluated with finite difference. The authors were also able to perform large scale molecular dynamics simulations~\cite{osei2014accurate}.
 % kim1995total: They do not resolve the optimization problem, they only create a method that converges to the proper minimum from ANY initial state. They judge convergence by the energy approaching a plato. They need hundreds of steps to produce a well-converged state. They are not converged even then. This can be seen from unstable MD. How do they address the problem of multiple minima? They expand the variational space by including unoccupied orbitals and add the mu-dependent penalty designed to keep the number of electrons constant. They need to optimize mu (chemical potential) as well.
 % ordejon1995linear: At each time step of the simulation, the electronic energy was minimized within a tolerance of 10$^{-8}. RZZK: what does it mean? It does not seem that they use the norm of the gradient. Same problem as with kim1995total. Convergence criteria is the energy change, MD is unstable.
-\new Yifei, the introduction must describe why the methods described in the reference list above were not successful in solving the convergence problem? \old Energy change as the convergence test~\cite{fattebert2000towards, kim1995total, ordejon1995linear}. Not a good convergence criterion. Does not indicate true convergence as shown in Figure~RZZK. Leads to instabilities in AIMD.
+%Energy change as the convergence test~\cite{fattebert2000towards, kim1995total, ordejon1995linear}. Not a good convergence criterion. Does not indicate true convergence as shown in Figure~RZZK. Leads to instabilities in AIMD.
+
+We note that in the previously mentioned works, the convergence criteria are always the energy change. However, in this work we use a stronger convergence criteria which is maximum norm of the gradient, which excludes the possibility that the energy enters an unstable plateau during the optimization.
 %The origins of the convergence problem have not been described. 
 %Dramatically increased computational cost is one reason.
 
@@ -470,7 +474,7 @@ Note that coefficients outside $\bar{x}$ may be nonzero but we do not need them.
 
 \subsection{Generalized eigenvalues of Hessian, and physical meaning of low-curvature-projector}
 
-Here we further illustrate the origin of slow converging modes by looking at the (generalized) eigenvalues of the Hessian in the calculation of a realistic system. Fig~\ref{sfig:hesseig} shows the cases of (a)completely delocalied calculation, where the eigenvalues are either 0(corresponding to a occupied-occupied mixing) or significanly large(occupied-virtual mixing). (b) Straight forward CLMO calculation, where the eigenvalue spectrum is continuous and intermediate modes exsit. (c) Low-curvature-projector method, where the small and large eigenvalues are again seperated.
+Here we further illustrate the origin of slow converging modes by looking at the (generalized) eigenvalues of the Hessian in the calculation of a realistic system. Fig~\ref{sfig:hesseig} shows the cases of (a)completely delocalied calculation, where the eigenvalues are either 0(corresponding to a occupied-occupied mixing) or significanly large(occupied-virtual mixing). (b) Straight forward CLMO calculation, where the eigenvalue spectrum is continuous and intermediate modes exsit. (c) Low-curvature-projector method, where the small and large eigenvalues are again seperated after removing some of the small eigenvectors.
 
 \begin{figure}
 \centering
