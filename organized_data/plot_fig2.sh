@@ -5,6 +5,9 @@ set terminal postscript eps color enhanced size 3,2
 set output 'residue.eps'
 
 set logscale y
-set ylabel 'residue'
+set xrange [1:16]
+set ylabel '{/Symbol D}'
+set xlabel 'Eigenvector No.'
 
-p 'fig2_tio2.dat' w lp title 'TiO2', 'fig2_cdse.dat' w lp title 'CdSe', 'fig2_si.dat' w lp title 'silicon', 'fig2_water.dat' w lp title 'water', 'fig2_hf.dat' w lp title 'HF'
+p 'fig2_tio2.dat' u ($0+1):1 w lp lw 3 title 'TiO2', 'fig2_cdse.dat' u ($0+1):1 w lp lw 3title 'CdSe',\
+'fig2_si.dat' u ($0+1):1 w lp lw 3 title 'silicon', 'fig2_water.dat' u ($0+1):1 w lp lw 3 title 'water', 'fig2_hf.dat' u ($0+1):1 w lp lw 3 title 'HF'
