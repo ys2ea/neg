@@ -293,7 +293,7 @@ The norm of the projection of the small-curvature modes on the unoccupied subspa
 Preconditioner eigenvectors with the eigenvalues smaller than 0.02~a.u. are chosen as small-curvature modes. 
 The following localization ceneters are considered: Ti$^{4+}$ ions in the TiO$_2$ rutile lattice, Cd$^{2+}$ ions in the CdSe Wurtzite lattice, Si atom in the diamond silicon lattice, O$^{2-}$ in a water tetramer system, hydrogen fluoride molecule in a linear tetramer system. 
 The BLYP/TZV2P level of theory is used for water and PBE/DZVP in all other tests.}
-%RZK: The legend should mirror the caption: "Ti$^{4+}$ in TiO$_2$" and so on. Consider plotting more modes, including what we call category-2 modes.
+%RZK: The legend should mirror the caption: "Ti$^{4+}$ in TiO$_2$" and so on. 
 \label{fig:projection}
 \end{figure}
 
@@ -359,13 +359,15 @@ and $\Lambda_c$ is the curvature threshold below which the optimization mode is 
 \tilde{P}_{\bar{x}\mu,\bar{x}\nu} &=& \bra{\chi_{\bar{x}\mu}} \op{Q}_{\bar{x}} \ket{\chi^{\bar{x}\lambda}}  P_{\bar{x}\lambda,\bar{x}\alpha} \bra{\chi^{\bar{x}\alpha}} \op{Q}_{\bar{x}} \ket{\chi_{\bar{x}\nu}} \label{eq:prec-lcp}.
 \eea
 %
-As a result, the PCG optimization procedure neglects low-curvature modes. Hopefully, the energy changes associated with them are  small. 
+As a result, the PCG optimization procedure neglects low-curvature modes. 
+%Hopefully, the energy changes associated with them are  small. 
 
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth]{convergence}
 \caption{The maximun norm of the energy gradient for the PBE/DZVP basis~\cite{RZK-molopt-basis-paper} optimization of the CLMOs for the hexagonal wurtzite CdSe lattice. $R_c = 3.5$~{\AA}. Modes with the preconditioner eigenvalues lower than 0.05~a.u. are removed from the optimization. The difference in the ground state energy for the two methods is 0.03 kJ/mol per Cd atom.}
-%RZK:  Explain legend in the caption. I have doubts about accuracy of the reference --- the two-stage procedure is not converged.
+%RZZK: Explain the legend in the caption. 
+%RZK: I have doubts about accuracy of the reference --- the two-stage procedure is not converged.
 \label{fig:convergence}
 \end{figure}
 
@@ -373,20 +375,36 @@ We will refer to the new method based on Eqs.~(\ref{eq:grad-lcp}) and (\ref{eq:p
 %RZZK- this would be a good place to say a couple of words about the connection of LCP to the two-stage procedure, its trial CLMOs and its weaknesses: dependence on optimization path, absence of a well-defined trial wavefunction.
 %Use this?: We note that upon applying the LCP $\op{Q}_{\bar{x}}$ on the gradient, the final energy is no longer fully variational: the gradient is only zero in diretions that significantly change the energy. It also implies that the energy will depend on the optimization path.
 
+%RZZK: This projection can be understood as a relaxed orthogonality constrain for the CLMOs. 
+
+%RZZK: Add to discussion: One weakness of defining CLMO domains \emph{a priori} in this way is that at least rough idea about the electron distribution in a system is required to assign electrons to localization centers and domains. Such a procedure is, of course, not applicable to systems in which the exact bonding properties are unknown.
+
+%RZZK: Discuss advantages and weaknesses of the new method: (a) We are giving up a strict energy functional. As a consequence, the final energy may depend on the optimization path (i.e. how often the PCG is restarted and preconditioner is recalculated). However, we demonstrate that the dependence of the energy on optimization path is insignificant and the final energy is close to the ground state. Moreover, the proposed method passes even more stringent test: it appears to produce stable molecular dynamics trajectories. As stated before, the filtered directions should be primarily occupied-occupied mixing, so that physically meaning full directions are not neglected and the final state is close to the true ground state. 
+
+%RZZK: The physical meaning of Eq~\ref{eq:approxq} is a modified orthogonality constrain for LMOs. Orthognality and locality has generally been considered as competing properties: strict orthogonality leads to decaying tails, and for LMOs no orthogonality constrains are imposed except for MOs within a fragment. However, this causes the convergence problem previously mentioned: LMOs without orthogonality tends to collapse. Although global orthogonality cannot be achieved, we suggest a local orthogonality constrain, that the projection of MOs onto each fragment $x$ should be orthogonal. Unlike the case for none-local MOs, not every physical state can be transformed into such state.
+
+%RZZK: While many previous works~\cite{RZZK} dealt with weakly-interacting fragments (e.g. molecules) the approach here represents the ultimate atomic partitioning scheme.
+
 \subsection{Implementation}
 
 The procedure for finding and projecting out the low-curvature modes is implemented in the CP2K software package~\cite{cp2kgeneral}. CP2K relies on the mixed Gaussian and plane wave representation of the electronic degrees of freedom~\cite{vandevondele2005quickstep} and is an ideal platform for the new orbital-based LS method: just a few tightly-localized Gaussian AOs can provide an accurate representation of CLMOs, whereas plane waves ensure a fast LS construction of the KS Hamiltonian for large systems.
 
-All parallel sparse matrix multiplications are performed with the DBCSR library~\cite{a:ls-dm-sign}. %RZK: Update DBCSR reference.
-The diagonalization of the preconditioner matrices is done independently for each domain maintaining the LS behavior of the method. 
-A special care was taken to reduce the computational overhead of the optimization procedure for large Gaussian basis sets. 
-To this end, the order of matrix multiplications is chosen to avoid steps that scale cubically with the size of the Gaussian basis set. 
+All matrix multiplications are performed with the DBCSR library~\cite{a:ls-dm-sign} designed for parallel linear-scaling handling of sparse matrices. %RZK: Update the DBCSR reference.
+A special care is taken to reduce the computational overhead of the optimization procedure for large Gaussian basis sets. 
+To this end, the order of matrix multiplications in Eqs.~(\ref{eq:grad-lcp}) and (\ref{eq:prec-lcp}) is chosen to avoid steps that scale cubically with the size of the Gaussian basis set. 
+The diagonalization of the preconditioner matrices is done independently for each domain. 
 
 It is important to note that the construction of the DM requires the inversion of the CLMO overlap matrix. 
 This matrix is small and its size is independent of the size of the basis set. 
 However, it is not confined to individual domains. This inversion is carried out using the iterative Hotelling method~\cite{hotelling1943some} that is based entirely on matrix multiplications and becomes LS when the system is large and the CLMO overlap and its inverse are sparse. 
 
+Because of the similarity between the new method and the ALMO SCF for molecular systems only minor modifications in the existing ALMO DFT module of CP2K are necessary. The main difference between the algorithms in the two approaches is that the PCG optimization of CLMOs in the LCP method might need more frequent re-evaluation and inversion of the preconditioner.
+
 %RZZK: PCG is restarted once in a while or it can be restarted quite often. If it is restarted and precond is evaluated on every step it become a Newton-Raphson with approximate Hessian.
+
+\subsection{Computational details}
+
+RZK: detailed description of computational procedures? E-cutoff, molopt. important numerical settings?
 
 \section{Results and discussion}
 
@@ -418,7 +436,7 @@ To demonstrate the accuracy of the LCP energies further, we performed a 500~K Mo
 \begin{figure}
 \centering
 \includegraphics[width=0.45\textwidth]{rdf_si}
-\caption{Silicon-silicon RDF calculated for the cubic diamond phase of silicon with carbon atoms introduced to create a point defect. XC/basis simulations are performed at $T=500$~K with the conventional orbital-transformation~\cite{RZK-OT} method for the delocalized electrons and the LCP method with $R_c = ZZZ$~\AA\ and $\Lambda=ZZZ$~a.u. The system includes 62 silicon atoms and two carbon atoms.}
+\caption{Silicon-silicon RDF calculated for the cubic diamond phase of silicon with carbon atoms introduced to create a point defect. XC/basis simulations are performed at $T=500$~K with the conventional orbital-transformation~\cite{RZK-OT} method for the delocalized electrons and the LCP method with $R_c = ZZZ$~\AA\ and $\Lambda_c = ZZZ$~a.u. The system includes 62 silicon atoms and two carbon atoms.}
 %RZK: replace "OT(MD)" with "Delocalized electrons (MD)". Replace "Low-curvature projector(MC)" with "LCP (MC)"
 %Specify the functional, basis set, R_c, \Lambda_c
 \label{fig:mc}
@@ -427,6 +445,8 @@ To demonstrate the accuracy of the LCP energies further, we performed a 500~K Mo
 %\subsection{Stable molecular dynamics simulations} 
 
 Molecular dynamics (MD) simulations present an even more stringent test on the accuracy of the LCP method. While minor errors in energies are not crucial in fixed-nuclei calculations, geometry optimizations, and Monte-Carlo simulations they tend to accumulate in MD trajectories leading to non-physical sampling and eventual failure. Accurate calculation of forces is therefore crucial for molecular dynamics simulations, the stability of which are judged by the accumulated drift in various conserved quantities. Although CLMOs obtained with the LCP method are not strictly variational we chose to neglect this error and invoke the Hellmann--Feynman theorem~\cite{feynman1939forces} in the calculation of atomic forces. An LCP-based MD test was performed for a protonated water nanocluster containing 62 water molecules and two protons. In the course of a three-picosecond MD simulation, the 2 protons hop around breaking and forming covalent bonds with water molecules. To reproduce motion of protons around the nanodroplet each atom was treated as a localization center. Setting $R_c = ZZZ$~\AA\ and $\Lambda_c = ZZZ$~a.u. produces sufficiently optimized CLMOs to ensure the stability of the MD simulation. Figure~\ref{fig:md} shows that the drift in the conserved quantity is acceptably small compared to the magnitude of the fluctuations in the potential energy. The applicability of the LCP method in MD simulations will be explored further especially in conjunction with the modified Langevin integrator method~\cite{scheiber2018communication}. 
+
+%RZZK: This partitioning allows to study chemical processes in the course of simulations without resorting to complex and unreliable schemes that redefine molecular fragments on-the-fly.
 
 \begin{figure}
 \includegraphics[width=0.45\textwidth]{const.eps}
@@ -438,30 +458,20 @@ Molecular dynamics (MD) simulations present an even more stringent test on the a
 
 %\subsection{Computational efficiency}
 
-To test the computational efficiency of the newly designed method, we compared its performance to the orbital transformation (OT) method~\cite{weber2008direct,vandevondele2003efficient} --- a well-optimized low-prefactor cubic scaling DFT method for conventional fully delocalized orbitals. The calculation is done for the hexagonal CdSe system of different sizes. $R_c$ is set to 3.5~{\AA}, which is large enough to accurately describe the electronic structure of the system (Figure~\ref{fig:accuracy}) and $\Lambda = ZZZ$~a.u. Figure~\ref{fig:scaling} demonstrates that the LCP method is asymptotically LS. The LS regime is achieved when the MO overlap matrix and its inverse are sparse. For a dense 3D system like CdSe it takes on the order of $\sim$3000 atoms. 
+To test the computational efficiency of the newly designed method, we compared its performance to the orbital transformation (OT) method~\cite{weber2008direct,vandevondele2003efficient} --- a well-optimized low-prefactor cubic scaling DFT method for conventional fully delocalized orbitals. The calculation is done for the hexagonal CdSe system of different sizes. $R_c$ is set to 3.5~{\AA}, which is large enough to accurately describe the electronic structure of the system (Figure~\ref{fig:accuracy}) and $\Lambda_c = ZZZ$~a.u. Figure~\ref{fig:scaling} demonstrates that the LCP method is asymptotically LS. The LS regime is achieved when the MO overlap matrix and its inverse are sparse. For a dense 3D system like CdSe it takes on the order of $\sim$3000 atoms. 
 %RZK: compare timing to that of a typical DM method. What EPS_DEFAULT and EPS_FILTER did you use to perform timing benchmark?
 
 \begin{figure}
 \centering
 \includegraphics[width=0.45\textwidth]{timing}
-\caption{CLMO optimization timing benchmark for the hexagonal CdSe lattice. The PBE/DZVP-MOLOPT basis calculation with $R_c=3.5$~{\AA} and $\Lambda=ZZZ$~a.u. is done on 256 compute cores.}
+\caption{CLMO optimization timing benchmark for the hexagonal CdSe lattice. The PBE/DZVP calculation with $R_c=3.5$~{\AA} and $\Lambda_c = ZZZ$~a.u. is done on 256 compute cores.}
 \label{fig:scaling}
 \end{figure}
 
 
 \section{Conclusions} 
 
-TO BE WRITTEN: 
-
-We develop a new DFT method based on LMOs. The notorious convergence problem is avoided by identifying the small but none-zero eigenvalues of the Hessian [while obviating a computationally costly construction and diagonalization of the Hessian]. These directions are projected out from the gradient and the preconditioner, and the remaining gradient shows fast convergence with PCG. This projection can be understood as a relaxed orthogonality constrain for the CLMOs. This method works even when the interaction and covalency between fragments are strong. We demonstrate the accuracy and efficiency of the method on systems like diamond silicon, CdSe. We also show a MD simulation in protonated water nanoclusters, and show that it can deal with systems where chemical reactions happen.
-
-While many previous works~\cite{RZZK} dealt with weakly-interacting fragments (e.g. molecules) the approach here represents the ultimate atomic partitioning scheme. This partitioning allows to study chemical processes in the course of simulations without resorting to complex and unreliable schemes that redefine molecular fragments on-the-fly.
-
-Add to discussion: One weakness of defining CLMO domains \emph{a priori} in this way is that at least rough idea about the electron distribution in a system is required to assign electrons to localization centers and domains. Such a procedure is, of course, not applicable to systems in which the exact bonding properties are unknown.
-
-Discuss advantages and weaknesses of the new method: (a) We are giving up a strict energy functional. As a consequence, the final energy may depend on the optimization path (i.e. how often the PCG is restarted and preconditioner is recalculated). However, we demonstrate that the dependence of the energy on optimization path is insignificant and the final energy is close to the ground state. Moreover, the proposed method passes even more stringent test: it appears to produce stable molecular dynamics trajectories. As stated before, the filtered directions should be primarily occupied-occupied mixing, so that physically meaning full directions are not neglected and the final state is close to the true ground state. 
-
-RZZK: The physical meaning of Eq~\ref{eq:approxq} is a modified orthogonality constrain for LMOs. Orthognality and locality has generally been considered as competing properties: strict orthogonality leads to decaying tails, and for LMOs no orthogonality constrains are imposed except for MOs within a fragment. However, this causes the convergence problem previously mentioned: LMOs without orthogonality tends to collapse. Although global orthogonality cannot be achieved, we suggest a local orthogonality constrain, that the projection of MOs onto each fragment $x$ should be orthogonal. Unlike the case for none-local MOs, not every physical state can be transformed into such state.
+We present a new [simple/straightforward] LS method for [RZZK: based entirely on] the variational optimization of localized molecular orbitals in DFT, without the typical concomitant variation of the density matrix. We obviate the notorious convergence problem plaguing promising orbital-based LS DFT methods by avoiding the optimization along the directions associated with tiny eigenvalues of the electronic Hessian. We show that these low-curvature modes --- an unavoidable repercussion of imposing localization constraints --- can be safely neglected because they are associated with mixing of nearly occupied states and do not produce a noticeable variational decrease in the energy. We also designed a procedure to identify the low-curvature modes on-the-fly without the computationally costly construction and diagonalization of the Hessian. A variety of tests for systems with nonvanishing band gap --- rutile phase of titania, diamond phase of silicon, and hexagonal Wurtzite phase of CdSe --- demonstrate that the method is accurate and efficient even when there are strong covalent interaction between single-atom localization centers. Furthermore, the ability of the new method to handle atomic partitioning across covalent bonds enables us to perform stable molecular dynamics simulation of bond-breaking and formation processes in a protonated water nanocluster. RZZK: The developed practical LS DFT method with low computational overhead will have a significant impact on computational modeling of complex systems enabling calculations on previously inaccessible time and length scales and making completely new chemical phenomena accessible to simulations.
 
 \section{Acknowledgments} The research was funded by the Natural Sciences and Engineering Research Council of Canada through the Discovery Grant (RGPIN-2016-05059). The authors are grateful to Compute Canada for computer time.
 
