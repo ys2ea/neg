@@ -472,17 +472,16 @@ To test the computational efficiency of the newly designed method, we compared i
 \section{Conclusions} 
 
 This work presents a new linear-scaling DFT method based entirely on the straightforward variational optimization of localized molecular orbitals. 
-Unlike many existing LS methods, the method does not perform the typical concomitant variation of the density matrix, resulting in substantial decrease in the computational cost. 
+Unlike many existing LS methods, the method does not perform the typical concomitant variation of the density matrix and thus has a substantially lower computational cost. 
 The notorious convergence problem that has plagued orbital-based LS DFT methods is resolved by avoiding the optimization of orbitals along low-curvature modes -- the directions associated with tiny eigenvalues of the electronic Hessian. 
 An efficient procedure is designed to identify the low-curvature modes on-the-fly without the computationally costly construction and diagonalization of the Hessian. 
-It is also shown that the low-curvature modes --- an unavoidable consequence of imposing localization constraints --- can be safely neglected because they are associated with the mixing of nearly occupied states and do not produce a noticeable variational decrease in the energy. 
+It is also shown that the low-curvature modes --- an unavoidable repercussion of imposing localization constraints --- can be safely neglected because they are associated with the mixing of nearly occupied states and do not produce a noticeable variational decrease in the energy. 
 
-The new methodology, which is expected to be applicable to systems with nonvanishing band gap, is tested on a variety of materials including rutile phase of titania, cubic diamond phase of silicon, and hexagonal phase of CdSe. The tests demonstrate that the method is accurate and efficient even when there are strong covalent interaction between single-atom localization centers. 
-%Furthermore, the ability of the new method to handle atomic partitioning across covalent bonds enables us to perform stable molecular dynamics simulation of bond-breaking and formation processes in a protonated water nanocluster. 
-%
-Furthermore, preliminary tests on protonated water nanoclusters suggest that the new method is sufficiently robust [with atomic partitioning] to enable stable molecular dynamics simulation of bond-breaking and formation processes. 
+The new methodology, which is expected to be applicable to systems with nonvanishing band gap, is tested on a variety of materials including rutile phase of titania, cubic diamond phase of silicon with defects, and hexagonal phase of cadmium selenide. 
+These tests demonstrate that the method is accurate and efficient even when localization centers are represented by single atoms and there are strong covalent interaction between the centers. 
+Furthermore, preliminary tests on protonated water nanoclusters suggest that the atomic partitioning does not present problems for the new method and it is sufficiently robust to enable stable molecular dynamics simulation of bond-breaking and formation processes. 
 
-The developed LS DFT method is expected to have a significant impact on computational modeling of complex systems due to its low computational overhead, enabling calculations on previously inaccessible time and length scales and making completely new chemical phenomena accessible to simulations.
+The developed LS DFT method is expected to have a significant impact on computational modeling of complex systems due to its low computational overhead, enabling calculations on previously inaccessible time and length scales and making completely new chemical phenomena amenable to simulations.
 
 \section{Acknowledgments} The research was funded by the Natural Sciences and Engineering Research Council of Canada through the Discovery Grant (RGPIN-2016-05059). The authors are grateful to Compute Canada for computer time.
 
