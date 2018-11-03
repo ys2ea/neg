@@ -262,7 +262,6 @@ Our hypothesis can be verified by calculating the residue $\Delta$ of the small-
 \eea
 %
 where $\op{R}_{\bar{x}}$ is a projector constructed from the occupied CLMOs of the neighbors truncated to the subspace $\bar{x}$ with operator $\op{T}_{\bar{x}} \approx \op{I}_{\bar{x}}$
-% RZZK: re-write the equations to explain what is really done.
 \bea
 {R}_{\bar{x}} &=& \sum_{y,z \in \bar{x}} \op{T}_{\bar{x}} \ket{\psi_{yi}} \sigma_{\bar{x}}^{yi,zj} \bra{\psi_{zj}} \op{T}_{\bar{x}}
 %R^{\bar{x}\mu,\bar{x}\nu} &\equiv& \bra{\chi^{\bar{x}\mu}} \op{R}_{\bar{x}} \ket{\chi^{\bar{x}\nu}} \\
@@ -362,7 +361,7 @@ As a result, the PCG optimization procedure neglects low-curvature modes.
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth]{convergence}
-\caption{The maximun norm of the energy gradient for the PBE/DZVP basis~\cite{RZK-molopt-basis-paper} optimization of the CLMOs for the hexagonal wurtzite CdSe lattice. $R_c = 3.5$~{\AA}. Modes with the preconditioner eigenvalues lower than 0.05~a.u. are removed from the optimization.} 
+\caption{The maximun norm of the energy gradient for the PBE/DZVP basis~\cite{vandevondele2007gaussian} optimization of the CLMOs for the hexagonal wurtzite CdSe lattice. $R_c = 3.5$~{\AA}. Modes with the preconditioner eigenvalues lower than 0.05~a.u. are removed from the optimization.} 
 %The difference in the ground state energy for the two methods is 0.03 kJ/mol per Cd atom.
 %RZZK: Explain the legend in the caption. 
 \label{fig:convergence}
@@ -433,8 +432,6 @@ To demonstrate the accuracy of the LCP energies further, we performed a 500~K Mo
 \centering
 \includegraphics[width=0.45\textwidth]{rdf_si}
 \caption{Silicon-silicon RDF calculated for the cubic diamond phase of silicon with carbon atoms introduced to create a point defect. XC/basis simulations are performed at $T=500$~K with the conventional orbital-transformation~\cite{RZK-OT} method for the delocalized electrons and the LCP method with $R_c = 6$~\AA\ and $\Lambda_c = 0.02$~a.u. The system includes 62 silicon atoms and two carbon atoms.}
-%RZK: replace "OT(MD)" with "Delocalized electrons (MD)". Replace "Low-curvature projector(MC)" with "LCP (MC)"
-%Specify the functional, basis set, R_c, \Lambda_c
 \label{fig:mc}
 \end{figure}
 
@@ -447,7 +444,6 @@ Molecular dynamics (MD) simulations present an even more stringent test on the a
 \begin{figure}
 \includegraphics[width=0.45\textwidth]{const.eps}
 \caption{The potential energy and the conserved quantity in a LCP-based MD simulation of a protonated water nanocluster $\text{(H}^{+}\text{)}_2\text{(H}_2\text{O)}_{62}$. The temperature of the NVT simulations is set to 298~K and controlled by a canonical velocity re-scaling thermostat~\cite{bussi2007canonical} with the coupling time constant of 50~fs. The potential energy and conserved quantity are shifted for clarity.}
-%RZK format figure: "Pot" -> "Potential energy" in both instances, "Cons Qty" -> "Conserved Quantity". Set zero energy in the conserved quantity at the first step and put the Cons Qty on the left axis. Make sure that both energy axis span the same energy range. It is desirable to set zero for potential energy to center the black curve vertically. It will be easier to see the magnitude of the drift compared to the pot energy. Also make sure the graph does not have large empty margins along the y-axiz. 
 \label{fig:md}
 \end{figure}
 
