@@ -50,8 +50,8 @@ We demonstrated the new method is highly efficient yet accurate for a variety of
 
 Today, Kohn-Sham (KS) density functional theory (DFT) is the most popular electronic structure method. 
 RZZK-Unfortunately, the computational cost of the conventional diagonalization-based KS DFT grows cubically with the number of atoms preventing its application to large systems. 
-To overcome this limitation, substantial efforts have been directed to the development of linearly-scaling (LS) DFT methods~\cite{goedecker1999linear,bowler2012methods,RZK-zalesny2011linear}. 
-% RZK-zalesny2011linear: R. Zalesny, M. G. Papadopoulos, P. G. Mazey and J. Leszcznski, Challenges and Advances in Computational Chemistry and Physics, Linear-Scaling Techniques in Computational Chemistry and Physics: Methods and Applications, Springer, New York, 2011.
+To overcome this limitation, substantial efforts have been directed to the development of linearly-scaling (LS) DFT methods~\cite{goedecker1999linear,bowler2012methods,zalesny2011linear}. 
+
 
 In LS DFT methods, the delocalized eigenstates of the effective KS Hamiltonian must be replaced with an alternative set of \emph{local} electron descriptors. 
 Most LS methods explore the natural locality of the one-electron density matrix (DM)~\cite{li1993density, lee1996linear, li2003density, shao2003curvy, vandevondele2012linear, kussmann2013linear, aarons2016perspective}.  
@@ -106,7 +106,7 @@ The progress of a typical variational optimization of CLMOs in Figure~\ref{fig:d
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{det}
 \caption{
-The determinant of the CLMO overlap matrix and the maximum norm of the energy gradient with respect to the CLMO coefficients in a direct iterative optimization with the conjugate gradient algorithm. Linear system of four hydrogen fluoride molecules interacting through hydrogen bonds is described at the PBE/DZVP level of theory. CLMOs of a molecule are allowed to delocalize only over the two nearest neighbors. For reference, the same optimization of fully delocalized orbitals converges below $\| \nabla E \|_{\text{max}} < 10^{-6}$~a.u. within 10 iterations.}
+The determinant of the CLMO overlap matrix and the maximum norm of the energy gradient with respect to the CLMO coefficients in a direct iterative optimization with the conjugate gradient algorithm. Although the gradient does not vanish, the energy comes into a plateau. Note that the zero point of energy curve is set at the energy of full delocalized calculation. Linear system of four hydrogen fluoride molecules interacting through hydrogen bonds is described at the PBE/DZVP level of theory. CLMOs of a molecule are allowed to delocalize only over the two nearest neighbors. For reference, the maximun norm of the gradient of same optimization using fully delocalized orbitals is also shown, and converges below $\| \nabla E \|_{\text{max}} < 10^{-6}$~a.u. within 10 iterations.\emph{}}
 %RZK: It is important to show the energy (and perhaps the energy change) on a additional panel
 %RZK: Use the log scale for the gradient to see details in the first five steps
 %RZK: Show the behavior of the fully delocalized system
