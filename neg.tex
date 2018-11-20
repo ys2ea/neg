@@ -36,6 +36,7 @@ in density functional theory}
 %\date{\today}
 
 \begin{abstract}
+% localized molecular orbitals which are expanded in local subsets of the molecular basis set (i.e. a subset of the total molecular basis set, consisting of functions centred on or near a given atom or bond).
 Density functional theory based on compact localized nonorthogonal molecular orbitals is a conceptually simple method that can potentially enable low-cost linear-scaling modeling of the electronic structure of molecules and materials with finite energy gap. 
 Despite multiple advantages its development has long been hindered because a compact representation of the electronic ground state is difficult to find in a variational optimization procedure. 
 In this work, we showed that the slow and unstable optimization of compact orbitals is due to the nearly-invariant mixing of occupied orbitals that almost entirely but not fully localized within their local vector subspaces. 
@@ -48,29 +49,39 @@ We demonstrated the new method is highly efficient yet accurate for a variety of
 
 \section{Introduction}
 
-Today, Kohn-Sham (KS) density functional theory (DFT) is the most popular electronic structure method. 
-RZZK-Unfortunately, the computational cost of the conventional diagonalization-based KS DFT grows cubically with the number of atoms preventing its application to large systems. 
-To overcome this limitation, substantial efforts have been directed to the development of linearly-scaling (LS) DFT methods~\cite{goedecker1999linear,bowler2012methods,RZK-zalesny2011linear}. 
-% RZK-zalesny2011linear: R. Zalesny, M. G. Papadopoulos, P. G. Mazey and J. Leszcznski, Challenges and Advances in Computational Chemistry and Physics, Linear-Scaling Techniques in Computational Chemistry and Physics: Methods and Applications, Springer, New York, 2011.
+At present, Kohn-Sham (KS) density functional theory (DFT) is the most popular electronic structure method. 
+Unfortunately, the computational cost of the conventional diagonalization-based KS DFT grows cubically with the number of atoms preventing its application to large systems. 
+To overcome this limitation, substantial efforts have been directed to the development of linearly-scaling (LS) DFT methods~\cite{goedecker1999linear, bowler2012methods, zalesny2011linear}. 
+% zalesny2011linear: R. Zalesny, M. G. Papadopoulos, P. G. Mazey and J. Leszcznski, Challenges and Advances in Computational Chemistry and Physics, Linear-Scaling Techniques in Computational Chemistry and Physics: Methods and Applications, Springer, New York, 2011.
 
 In LS DFT methods, the delocalized eigenstates of the effective KS Hamiltonian must be replaced with an alternative set of \emph{local} electron descriptors. 
 Most LS methods explore the natural locality of the one-electron density matrix (DM)~\cite{li1993density, lee1996linear, li2003density, shao2003curvy, vandevondele2012linear, kussmann2013linear, aarons2016perspective}.  
 They include, among others, the Fermi operator expansion~\cite{goedecker1994efficient, goedecker1995tight}, divide-and-conquer~\cite{yang1991direct, yang1991local}, and direct DM optimization methods~\cite{li1993density, shao2003curvy, vandevondele2012linear}. 
 However, the variational optimization of the DM is very inefficient for accurate DFT calculations which require many basis functions per atom~\cite{goedecker1999linear,vandevondele2012linear, arita2014stable, bowler2012methods, khaliullin2013efficient}.
 Therefore, the application of DM-based LS methods have been mostly restricted to minimal-basis tight-binding problems~\cite{Richters2014, goringe1997tight, ratcliff2018band}. 
+% Richters2014 :   doi.org/10.1063/1.4869865
 This issue is rectified in optimal-basis DM methods~\cite{skylaris2005introducing, nakata2015optimized, mohr2015accurate} that contract large basis sets into a small number of new localized functions and then optimize the DM in the contracted basis. 
 Despite becoming the most popular LS DFT, the efficiency of optimal-basis methods is hampered by the costly optimization of both the contracted orbitals and the DM~\cite{mostofi2003preconditioned}.
 
-One-electron orbitals that are strictly localized within predefined spatial regions represent another type of local electron descriptors, alternative to the DM. 
-Such orbitals [have been introduced in the early years of QC~\cite{ZZZ} and] are known under different names --- localized wave functions~\cite{ordejon1995linear}, absolutely localized molecular orbitals~\cite{stoll1980use}, orbitals on compact support~\cite{RZZK}, non-orthogonal localized molecular orbitals~\cite{weitao}. 
-However, in this work, they will be referred to as compact localized molecular orbitals (CLMOs). This is to emphasize that their locality is enforced by setting the expansion coefficients in some localized basis set (e.g. numerical atomic orbitals, Gaussian orbitals, psync or RZZK-spline functions) precisely to zero for all basis functions centered outside CLMO's localization domain.
-% RZZK: While we used ALMO --- original name given to these orbitals by Stoll et al. -- to refer to these oribtals we prefer using CLMO in this work to distinguish them from block-diagonal version of ALMO popularized in Head-Gordon et al.  
+One-electron orbitals expanded strictly in subsets of localized basis functions centered on and near a given nuclei 
+%(e.g. numerical atomic orbitals, Gaussian orbitals, periodic sinc or B-spline functions) 
+represent another type of local electron descriptors, alternative to the DM. 
+Since their introduction~\cite{matsuoka1977expansion, stoll1977on, mehler1977self} such localized orbitals have become known under different names including absolutely localized molecular orbitals~\cite{stoll1980use}, localized wave functions~\cite{ordejon1995linear}, non-orthogonal generalized Wannier functions~\cite{skylaris2005introducing}, multi-site support functions~\cite{nakata2015optimized}, and non-orthogonal localized molecular orbitals~\cite{burger2008linear}. 
+% matsuoka1977expansion -- doi: 10.1063/1.434017
+% stoll1977on -- https://doi.org/10.1007/BF00551649
+% mehler1977self -- doi: 10.1063/1.435187
+In this work, we will refer to them as compact localized molecular orbitals (CLMOs) to emphasize that their expansion coefficients are zero for the basis functions outside orbital's localization subset. Unlike our previous work~\cite{khaliullin2013efficient}, we avoid using the ALMO acronym~\cite{stoll1980use} because now it is commonly used to refer to compact orbitals restricted to \emph{nonoverlapping} subsets~\cite{khaliullin2006efficient, khaliullin2007unravelling, khaliullin2008analysis, horn2013unrestricted} - a special case of CLMOs. 
+%khaliullin2006efficient - https://doi.org/10.1063/1.2191500
+%horn2013unrestricted - doi: 10.1063/1.4798224
 
-%First NOLMOs: W. Adams, J. Chem. Phys., 1961, 34, 89; W. Adams, J. Chem. Phys., 1962, 37, 2009; T. Gilbert and P. Lykos, J. Chem. Phys., 1961, 34, 2199.
+%First NOLMOs: W. Adams, J. Chem. Phys., 1961, 34, 89; W. Adams, J. Chem. Phys., 1962, 37, 2009; T. Gilbert and P. Lykos, J. Chem. Phys., 1961, 34, 2199. These are not constrained though.
 
 From the computational point of view, a direct variation of CLMOs is preferable to the DM for systems with nonvanishing band gap because LS can be achieved with significantly fewer variables. 
 The computational advantages of orbitals-only LS DFT would be especially pronounced in accurate calculations that require many basis functions per atom. 
-CLMOs are also advantageous from the physical point of view because they provide clear, chemically meaningful, transferable description of interactions between atoms and molecules~\cite{RZZK-weitao, stoll1980use, khaliullin2007unravelling, khaliullin2008analysis, RZZK-water2013analysis}. 
+CLMOs are also advantageous from the physical point of view because they provide clear, chemically meaningful, transferable description of interactions between atoms and molecules~\cite{stoll1980use, mo2000energy, khaliullin2007unravelling, khaliullin2013microscopic, mo2014block}. 
+% mo2000energy - doi.org/10.1063/1.481185
+% khaliullin2013microscopic - DOI:10.1039/C3CP51039E
+% mo2014block - https://doi.org/10.1002/9783527664696.ch6
 Regrettably, the development of promising orbital-based LS methods has been hindered~\cite{peng2013effective,tsuchida2008ab, fattebert-recent} because of slow and inherently difficult variational optimization of CLMOs~\cite{mauri1993orbital,ordejon1995linear,goedecker1999linear, fattebert2004linear, peng2013effective, tsuchida2008ab, weitao-yang}. 
 %
 %Complete CLMO references:
@@ -106,7 +117,7 @@ The progress of a typical variational optimization of CLMOs in Figure~\ref{fig:d
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{det}
 \caption{
-The determinant of the CLMO overlap matrix and the maximum norm of the energy gradient with respect to the CLMO coefficients in a direct iterative optimization with the conjugate gradient algorithm. Linear system of four hydrogen fluoride molecules interacting through hydrogen bonds is described at the PBE/DZVP level of theory. CLMOs of a molecule are allowed to delocalize only over the two nearest neighbors. For reference, the same optimization of fully delocalized orbitals converges below $\| \nabla E \|_{\text{max}} < 10^{-6}$~a.u. within 10 iterations.}
+The determinant of the CLMO overlap matrix and the maximum norm of the energy gradient with respect to the CLMO coefficients in a direct iterative optimization with the conjugate gradient algorithm. Linear system of four hydrogen fluoride molecules interacting through hydrogen bonds is described at the PBE/DZVP level of theory. CLMOs of a molecule are allowed to delocalize only over the two nearest neighbors. For the reference, the same optimization of fully delocalized orbitals converges below $\| \nabla E \|_{\text{max}} < 10^{-6}$~a.u. within 10 iterations.}
 %RZK: It is important to show the energy (and perhaps the energy change) on a additional panel
 %RZK: Use the log scale for the gradient to see details in the first five steps
 %RZK: Show the behavior of the fully delocalized system
@@ -115,14 +126,14 @@ The determinant of the CLMO overlap matrix and the maximum norm of the energy gr
 
 Substantial efforts have been made to mitigate these problems. 
 They include the introduction of an extra set of variational parameters~\cite{yang1997absolute,burger2008linear, peng2013effective} or the energy functionals that can be calculated without inverting the CLMO overlap matrix~\cite{mauri1993orbital,kim1995total,ordejon1995linear}. 
-However, despite notable progress in CLMO-based DFT algorithms~\cite{fattebert2004linear, fattebert2006linear, osei2014accurate} all existing works establish convergence by measuring the rate of change of the energy or DM in the course of the self-consistent field (SCF) procedure. 
+However, despite notable progress~\cite{fattebert2004linear, fattebert2006linear, osei2014accurate} all existing CLMO-based DFT algorithms [are still inefficient and] establish convergence by measuring the rate of change of the energy or DM in the course of the self-consistent field (SCF) procedure. 
 The SCF convergence has not been demonstrated using the norm of the gradient of the energy with respect to the CLMO coefficients -- a much stronger convergence criteria that rules out the possibility of a sluggish optimization (RZZK: Figure~\ref{fig:det}).
 
 Importantly, the convergence problem has been reliably solved for weakly-interacting molecular systems. 
 It has been shown that CLMOs can be optimized efficiently only if they are forced to be orthogonal to a set of auxiliary tightly localized nonoverlaping orbitals, precomputed and fixed on their molecules~\cite{tsuchida2007augmented, tsuchida2008ab, khaliullin2013efficient}. 
 As will be discussed below, this approach works only when the auxiliary orbitals resemble the final variationally optimal CLMOs and thus cannot be applied to finite-gap systems with strong covalent bonds between atoms. 
 
-In this work, a detailed analysis of the origins of the convergence problem enabled us to develop a new linear-scaling CLMO-based DFT method that converges fast for systems of strongly interacting atoms and avoids collapsed states. The new method is conceptually simple and does not require any precomputed tightly-localized orbitals nor the optimization of auxiliary variables. These features greatly reduce its computational cost and make it straightforward to implement. While several tests demonstrate the accuracy and efficiency of the method for systems with finite band gap it is not expected to be efficient for metals and semimetals.
+In this work, a detailed analysis of the origins of the convergence problem enabled us to develop a new linear-scaling CLMO-based DFT method that converges fast for systems of strongly interacting atoms and avoids collapsed states. The new method is conceptually simple and does not require any precomputed tightly-localized orbitals nor the optimization of auxiliary variables. These features greatly reduce its computational cost and make it straightforward to implement. Several tests in this work demonstrate the accuracy and efficiency of the method for systems with finite band gap. However, it is not expected to be practical for metals and semimetals.
 
 %\begin{itemize}
 %\item The energy converges fast, and works with systems where interactions are strong.
@@ -137,9 +148,9 @@ In this work, a detailed analysis of the origins of the convergence problem enab
 \subsection{Formalism, notation and main assumptions}
  
 %In any CLMO method, concepts of electron \emph{localization centers}, often also referred to as fragments, and electron \emph{localization domains} play key roles. 
-In the first step, all atoms of a system, its electrons, and atom-centered basis set orbitals (AOs) --- in our case Gaussian functions --- are logically divided into nonoverlapping subsets called \emph{localization centers}, often also referred to as \emph{fragments}. 
-For a system with clearly defined molecules, a typical localization center includes all atoms of a single molecule and their associated AOs and electrons. 
-For systems that cannot be partitioned into molecules --- the subject of this work --- a localization center can be represented by a single atom. 
+In the first step, all atomic nuclei of a system, its electrons, and atom-centered basis set orbitals (AOs) --- in our case Gaussian functions --- are logically divided into nonoverlapping subsets called \emph{localization centers}, often referred to as \emph{fragments}. 
+For a system with clearly defined molecules, a typical localization center includes all nuclei of a single molecule and their associated AOs and electrons. 
+For systems that cannot be partitioned into molecules --- the subject of this work --- a localization center can be represented by a single nuclei. 
 As a results of the partitioning, each electron acquires a localization-center label. 
 Within Kohn-Sham DFT, electrons are described by molecular orbitals (MOs) \ket{\psi_{xi}} whose indices now indicate that orbital $i$ belongs to center $x$. Throughout this work, centers are labeled with Latin letters $x,y,z$ whereas Latin letters $i,j,k$ label MOs. 
 
@@ -295,7 +306,6 @@ The proposed explanation of the nature of the low-curvature modes is consistent 
 %
 \bea
 \ket{\psi_{xi}} &=& \ket{\psi_{xi}^{0}} + \op{I}_{\bar{x}} (\op{I} - \op{R}^{0} ) \ket{\chi_{\bar{x}\mu}} \bar{T}^{{\bar{x}\mu}}_{xi}
-\label{eq:LMOproj}
 \eea
 %
 For the CLMOs of this form, the gradient and preconditioner  
