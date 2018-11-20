@@ -52,7 +52,6 @@ We demonstrated the new method is highly efficient yet accurate for a variety of
 At present, Kohn-Sham (KS) density functional theory (DFT) is the most popular electronic structure method. 
 Unfortunately, the computational cost of the conventional diagonalization-based KS DFT grows cubically with the number of atoms preventing its application to large systems. 
 To overcome this limitation, substantial efforts have been directed to the development of linearly-scaling (LS) DFT methods~\cite{goedecker1999linear,bowler2012methods,zalesny2011linear}. 
-% zalesny2011linear: R. Zalesny, M. G. Papadopoulos, P. G. Mazey and J. Leszcznski, Challenges and Advances in Computational Chemistry and Physics, Linear-Scaling Techniques in Computational Chemistry and Physics: Methods and Applications, Springer, New York, 2011.
 
 In LS DFT methods, the delocalized eigenstates of the effective KS Hamiltonian must be replaced with an alternative set of \emph{local} electron descriptors. 
 Most LS methods explore the natural locality of the one-electron density matrix (DM)~\cite{li1993density, lee1996linear, li2003density, shao2003curvy, vandevondele2012linear, kussmann2013linear, aarons2016perspective}.  
@@ -70,7 +69,7 @@ Since their introduction~\cite{matsuoka1977expansion, stoll1977on, mehler1977sel
 % matsuoka1977expansion -- doi: 10.1063/1.434017
 % stoll1977on -- https://doi.org/10.1007/BF00551649
 % mehler1977self -- doi: 10.1063/1.435187
-In this work, we will refer to them as compact localized molecular orbitals (CLMOs) to emphasize that their expansion coefficients are zero for the basis functions outside orbital's localization subset. Unlike our previous work~\cite{khaliullin2013efficient}, we avoid using the ALMO acronym~\cite{stoll1980use} because now it is commonly used to refer to compact orbitals restricted to \emph{nonoverlapping} subsets~\cite{khaliullin2006efficient, khaliullin2007unravelling, khaliullin2008analysis, horn2013unrestricted} - a special case of CLMOs. 
+In this work, we will refer to them as compact localized molecular orbitals (CLMOs) to emphasize that their expansion coefficients are zero for the basis functions outside orbital's localization subset. Unlike our previous work~\cite{khaliullin2013efficient}, we avoid using the ALMO acronym~\cite{stoll1980use} because it is commonly used now to refer to compact orbitals restricted to \emph{nonoverlapping} subsets~\cite{khaliullin2006efficient, khaliullin2007unravelling, khaliullin2008analysis, horn2013unrestricted} - a special case of CLMOs. 
 %khaliullin2006efficient - https://doi.org/10.1063/1.2191500
 %horn2013unrestricted - doi: 10.1063/1.4798224
 
@@ -82,7 +81,7 @@ CLMOs are also advantageous from the physical point of view because they provide
 % mo2000energy - doi.org/10.1063/1.481185
 % khaliullin2013microscopic - DOI:10.1039/C3CP51039E
 % mo2014block - https://doi.org/10.1002/9783527664696.ch6
-Regrettably, the development of promising orbital-based LS methods has been hindered~\cite{peng2013effective,tsuchida2008ab, fattebert-recent} because of slow and inherently difficult variational optimization of CLMOs~\cite{mauri1993orbital,ordejon1995linear,goedecker1999linear, fattebert2004linear, peng2013effective, tsuchida2008ab, weitao-yang}. 
+Regrettably, the development of promising orbital-based LS methods has been hindered because of slow and inherently difficult variational optimization of CLMOs~\cite{mauri1993orbital, ordejon1995linear, goedecker1999linear, fattebert2004linear, peng2013effective, tsuchida2008ab, peng2013effective}. 
 %
 %Complete CLMO references:
 %%%%%% Before Goedecker 1999
@@ -107,7 +106,7 @@ Regrettably, the development of promising orbital-based LS methods has been hind
 %%%%%% Weitao Yang (before and after Goedecker review)
 % Yang, W., 1997, Phys. Rev. B 56, 9294 (absolute energy minimum principle). 
 %
-In addition to poor convergence of the variational procedure, the straightforward optimization of CLMOs, which cannot be constrained to stay both compact and orthogonal~\cite{stoll1980use, RZZK}, often leads to a ``collapsed'' electronic state represented by linearly dependent occupied orbitals~\cite{ordejon1995linear}. 
+In addition to poor convergence of the variational procedure, the straightforward optimization of CLMOs, which cannot be constrained to stay both compact and orthogonal~\cite{stoll1980use}, often leads to a ``collapsed'' electronic state represented by linearly dependent occupied orbitals~\cite{ordejon1995linear}. 
 %
 %Furthermore it was also shown in \cite{ordejon1995linear} that the straightforward LMO calculation without using a new energy functional may end up in a set of MOs that are collapsing. And the new energy functionals may lead to multiple minima \cite{kim1995total}. (Perhaps our formulation also has the multiple minima problem)
 The progress of a typical variational optimization of CLMOs in Figure~\ref{fig:det} suggests that the collapse, apparent from the vanishing determinant of the CLMO overlap matrix, is closely associated with the convergences problem.
@@ -117,23 +116,26 @@ The progress of a typical variational optimization of CLMOs in Figure~\ref{fig:d
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{det}
 \caption{
-The determinant of the CLMO overlap matrix and the maximum norm of the energy gradient with respect to the CLMO coefficients in a direct iterative optimization with the conjugate gradient algorithm. Although the gradient does not vanish, the energy comes into a plateau. Note that the zero point of energy curve is set at the energy of full delocalized calculation. Linear system of four hydrogen fluoride molecules interacting through hydrogen bonds is described at the PBE/DZVP level of theory. CLMOs of a molecule are allowed to delocalize only over the two nearest neighbors. For the reference, the maximun norm of the gradient of same optimization using fully delocalized orbitals is also shown, and converges below $\| \nabla E \|_{\text{max}} < 10^{-6}$~a.u. within 10 iterations.}
-%RZK?: It is important to show the energy (and perhaps the energy change) on a additional panel
-%RZK?: Use the log scale for the gradient to see details in the first five steps
-%RZK?: Show the behavior of the fully delocalized system
+The determinant of the CLMO overlap matrix, the energy, and the maximum norm of the energy gradient with respect to the CLMO coefficients in a direct iterative optimization with the conjugate gradient algorithm. 
+Linear system of four hydrogen fluoride molecules interacting through hydrogen bonds is described at the PBE/DZVP level of theory. 
+CLMOs of a molecule are allowed to delocalize only over the two nearest neighbors. 
+The zero energy is set at the energy of the fully delocalized state. 
+For the CLMO state, the energy plateaus even though the gradient does not vanish. 
+For the reference, the maximun norm of the gradient of same optimization using fully delocalized orbitals is also shown. %, and converges below $\| \nabla E \|_{\text{max}} < 10^{-6}$~a.u. within 10 iterations.
+}
 \label{fig:det}
 \end{figure}
 
 Substantial efforts have been made to mitigate these problems. 
 They include the introduction of an extra set of variational parameters~\cite{yang1997absolute,burger2008linear, peng2013effective} or the energy functionals that can be calculated without inverting the CLMO overlap matrix~\cite{mauri1993orbital,kim1995total,ordejon1995linear}. 
-However, despite notable progress~\cite{fattebert2004linear, fattebert2006linear, osei2014accurate} all existing CLMO-based DFT algorithms [are still inefficient and] establish convergence by measuring the rate of change of the energy or DM in the course of the self-consistent field (SCF) procedure. 
-The SCF convergence has not been demonstrated using the norm of the gradient of the energy with respect to the CLMO coefficients -- a much stronger convergence criteria that rules out the possibility of a sluggish optimization (RZZK: Figure~\ref{fig:det}).
+However, despite notable progress~\cite{fattebert2004linear, fattebert2006linear, osei2014accurate} the existing CLMO-based DFT algorithms establish convergence by measuring the rate of change of the energy in the course of the self-consistent field (SCF) procedure and require multiple steps to reach the final state. 
+Furthermore, the SCF convergence has not been demonstrated using the norm of the gradient of the energy with respect to the CLMO coefficients -- a much stronger convergence criteria that rules out a possibility of a sluggish optimization illustrated in Figure~\ref{fig:det}.
 
 Importantly, the convergence problem has been reliably solved for weakly-interacting molecular systems. 
 It has been shown that CLMOs can be optimized efficiently only if they are forced to be orthogonal to a set of auxiliary tightly localized nonoverlaping orbitals, precomputed and fixed on their molecules~\cite{tsuchida2007augmented, tsuchida2008ab, khaliullin2013efficient}. 
 As will be discussed below, this approach works only when the auxiliary orbitals resemble the final variationally optimal CLMOs and thus cannot be applied to finite-gap systems with strong covalent bonds between atoms. 
 
-In this work, a detailed analysis of the origins of the convergence problem enabled us to develop a new linear-scaling CLMO-based DFT method that converges fast for systems of strongly interacting atoms and avoids collapsed states. The new method is conceptually simple and does not require any precomputed tightly-localized orbitals nor the optimization of auxiliary variables. These features greatly reduce its computational cost and make it straightforward to implement. Several tests in this work demonstrate the accuracy and efficiency of the method for systems with finite band gap. However, it is not expected to be practical for metals and semimetals.
+In this work, a detailed analysis of the origins of the convergence problem enabled us to develop a new linear-scaling CLMO-based DFT method that converges fast for systems of strongly interacting atoms and avoids collapsed states. The proposed method is conceptually simple and does not require any precomputed tightly-localized orbitals nor the optimization of auxiliary variables. These features greatly reduce its computational cost and make it straightforward to implement. Several tests in this work demonstrate the accuracy and efficiency of the method for systems with finite band gap. It is important to state, however, that this method is not expected to be practical for metals and semimetals.
 
 %\begin{itemize}
 %\item The energy converges fast, and works with systems where interactions are strong.
