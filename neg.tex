@@ -443,7 +443,7 @@ To demonstrate the accuracy of the LCP energies further, we performed a 500~K Mo
 \label{fig:mc}
 \end{figure}
 
-%\subsection{Stable molecular dynamics simulations} 
+%\subsection{Stable molecular dynamics simulations}
 
 Molecular dynamics (MD) simulations present an even more stringent test on the accuracy of the LCP method. While minor errors in energies are not crucial in fixed-nuclei calculations, geometry optimizations, and Monte-Carlo simulations they tend to accumulate in MD trajectories leading to non-physical sampling and eventual failure. Accurate calculation of forces is therefore crucial for molecular dynamics simulations, the stability of which are judged by the accumulated drift in various conserved quantities. Although CLMOs obtained with the LCP method are not strictly variational we chose to neglect this error and invoke the Hellmann--Feynman theorem~\cite{feynman1939forces} in the calculation of atomic forces. An LCP-based MD test was performed for a protonated water nanocluster containing 62 water molecules and two protons. In the course of a three-picosecond MD simulation, the 2 protons hop around breaking and forming covalent bonds with water molecules. To reproduce motion of protons around the nanodroplet each atom was treated as a localization center. Setting $R_c = 4$~\AA\ and $\Lambda_c = 0.005$~a.u. produces sufficiently optimized CLMOs to ensure the stability of the MD simulation. Figure~\ref{fig:md} shows that the drift in the conserved quantity is acceptably small compared to the magnitude of the fluctuations in the potential energy. The applicability of the LCP method in MD simulations will be explored further especially in conjunction with the modified Langevin integrator method~\cite{scheiber2018communication}. 
 
