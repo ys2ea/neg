@@ -35,15 +35,12 @@ in density functional theory}
 
 %\date{\today}
 
-\begin{abstract}
-% RZZK: localized molecular orbitals which are expanded in local subsets of the molecular basis set (i.e. a subset of the total molecular basis set, consisting of functions centred on or near a given atom or bond).
-Density functional theory based on compact localized nonorthogonal molecular orbitals is a conceptually simple method that can potentially enable low-cost linear-scaling modeling of the electronic structure of molecules and materials with finite energy gap. 
-Despite multiple advantages its development has long been hindered because a compact representation of the electronic ground state is difficult to find in a variational optimization procedure. 
-In this work, we showed that the slow and unstable optimization of compact orbitals is due to the nearly-invariant mixing of occupied orbitals that almost entirely but not fully localized within their local vector subspaces. 
-%In this work, we identified the origin of the slow and unstable optimization of strictly localized orbitals and developed a simple and robust linear-scaling [optimization] procedure with a low computational overhead. 
-We also proposed a simple and practical method for identifying and removing the problematic nearly-invariant modes using an approximate Hessian and, as a result, developed a robust linear-scaling optimization procedure with a low computational overhead.  
-We demonstrated the new method is highly efficient yet accurate for a variety of systems ranging from molecular liquids to semi-conductors and insulators.  
-%Implications.  %Although this method is not fully variational, it is still accurate enough to produce stable molecular dynamics in systems where chemical reactions happen.
+\begin{abstract} 
+Locality of compact one-electron orbitals expanded strictly in terms of local subsets of basis functions can be exploited in density functional theory (DFT) to achieve linear growth of computation time with systems size, crucial in large-scale simulations. 
+However, despite advantages of compact orbitals the development of practical orbital-based linear-scaling DFT methods has long been hindered because a compact representation of the electronic ground state is difficult to find in a variational optimization procedure. 
+In this work, we showed that the slow and unstable optimization of compact orbitals originates from nearly-invariant mixing of occupied orbitals with the states that are mostly but not fully localized within the local vector subspace.
+We proposed a simple and practical method for identifying and removing the problematic nearly-invariant modes using an approximate Hessian and, as a result, developed a robust linear-scaling optimization procedure with a low computational overhead. 
+We demonstrated the new method is highly efficient yet accurate in fixed-nuclei calculations and molecular dynamics simulations for a variety of systems ranging from molecular liquids to semiconductors and insulators.  
 \end{abstract}
 \maketitle
 
@@ -218,7 +215,7 @@ provides the same rate of convergence of the PCG algorithm as the exact Hessian 
 
 \begin{figure*}
 \centering
-\includegraphics[width=0.8\textwidth]{modes}
+\includegraphics[width=0.75\textwidth]{modes}
 \caption{Illustration of the origin of low-curvature modes in a model vector space spanned by three basis set functions \ket{\text{AO}_1}, \ket{\text{AO}_2}, \ket{\text{AO}_3}. The left panel shows \ket{\text{CLMO}_1} (blue) confined to its domain spanned by \ket{\text{AO}_1} and \ket{\text{AO}_2} as well as \ket{\text{CLMO}_2}  (red, three cases) confined to its domain spanned by \ket{\text{AO}_2} and \ket{\text{AO}_3}. The right panel shows the behavior of the energy as a function of the position of \ket{\text{CLMO}_1} --- angle $\alpha$ --- for three typical cases. Case C shows that the low-curvature modes arise when \ket{\text{CLMO}_2}  lies almost entirely in the domain of \ket{\text{CLMO}_1}.}
 \label{fig:modes}
 \end{figure*}
@@ -376,8 +373,6 @@ We will refer to the new method based on Eqs.~(\ref{eq:grad-lcp}) and (\ref{eq:p
 %RZZK- this would be a good place to say a couple of words about the connection of LCP to the two-stage procedure, its trial CLMOs and its weaknesses: dependence on optimization path, absence of a well-defined trial wavefunction.
 %Use this?: We note that upon applying the LCP $\op{Q}_{\bar{x}}$ on the gradient, the final energy is no longer fully variational: the gradient is only zero in diretions that significantly change the energy. It also implies that the energy will depend on the optimization path.
 
-%RZZK: This projection can be understood as a relaxed orthogonality constrain for the CLMOs. 
-
 %RZZK: Add to discussion: One weakness of defining CLMO domains \emph{a priori} in this way is that at least rough idea about the electron distribution in a system is required to assign electrons to localization centers and domains. Such a procedure is, of course, not applicable to systems in which the exact bonding properties are unknown.
 
 %RZZK: Discuss advantages and weaknesses of the new method: (a) We are giving up a strict energy functional. As a consequence, the final energy may depend on the optimization path (i.e. how often the PCG is restarted and preconditioner is recalculated). However, we demonstrate that the dependence of the energy on optimization path is insignificant and the final energy is close to the ground state. Moreover, the proposed method passes even more stringent test: it appears to produce stable molecular dynamics trajectories. As stated before, the filtered directions should be primarily occupied-occupied mixing, so that physically meaning full directions are not neglected and the final state is close to the true ground state. 
@@ -403,19 +398,18 @@ Because of the similarity between the new method and the ALMO SCF for molecular 
 
 %RZZK: PCG is restarted once in a while or it can be restarted quite often. If it is restarted and precond is evaluated on every step it become a Newton-Raphson with approximate Hessian.
 
-\subsection{Computational details}
+\subsection{Accuracy and efficiency tests}
 
 %\subsection{Convergence}
 
 Figure~\ref{fig:convergence} shows that the new optimization procedure converges rapidly for the hexagonal CdSe lattice -- a particularly challenging case for LS methods considering the small band gap of this material and strong interactions between atoms. 
-In contrast, it is difficult to achieve convergence for the two-stage method described in Ref.~\cite{khaliullin2013efficient}. 
-It is also important to note that the final energy obtained with the new method is close to that obtained using the two-stage method. 
-
+In contrast, it is difficult to achieve convergence for this system using the two-stage method described in Ref.~\cite{khaliullin2013efficient}. 
+It is also important to note that the final energy obtained with the new method differs from the energy obtained after 250 iterations  of the unconverged two-stage procedure only by 0.03 kJ/mol per Cd atom. 
 
 %\subsection{Accuracy} 
 
 The accuracy of the LCP energies as a function of $R_c$ is shown in Figure~\ref{fig:accuracy} for several challenging systems with strong interaction and significant electron delocalization between fragments: CdSe in the hexagonal wurtzite lattice; liquid water in which each atom is treated as a fragment; silicon in the cubic diamond lattice. 
-Figure~\ref{fig:accuracy} demonstrates that the energy converges to the correct ground state energy as $R_c$ increases and that the error of the localization constraints imposed on electrons is small. The insets in Figure~\ref{fig:accuracy} also shows that the error of projecting out the low-curvature optimization modes is even small than that introduced by finite $R_c$. This confirms our hypothesis that the low-curvature directions do not produce a noticeable decrease in the energy.
+Figure~\ref{fig:accuracy} demonstrates that the energy converges to the correct ground state energy as $R_c$ increases. The error of the localization constraints imposed on electrons is small. The insets in Figure~\ref{fig:accuracy} also shows that the error of projecting out the low-curvature optimization modes is even smaller than that introduced by finite $R_c$. These tests confirm our hypothesis that the low-curvature directions do not produce a noticeable decrease in the energy.
 
 \begin{figure}
 \centering
@@ -438,7 +432,7 @@ To demonstrate the accuracy of the LCP energies further, we performed a 500~K Mo
 
 %\subsection{Stable molecular dynamics simulations}
 
-Molecular dynamics (MD) simulations present an even more stringent test on the accuracy of the LCP method. While minor errors in energies are not crucial in fixed-nuclei calculations, geometry optimizations, and Monte-Carlo simulations they tend to accumulate in MD trajectories leading to non-physical sampling and eventual failure. Accurate calculation of forces is therefore crucial for molecular dynamics simulations, the stability of which are judged by the accumulated drift in various conserved quantities. Although CLMOs obtained with the LCP method are not strictly variational we chose to neglect this error and invoke the Hellmann--Feynman theorem~\cite{feynman1939forces} in the calculation of atomic forces. An LCP-based MD test was performed for a protonated water nanocluster containing 62 water molecules and two protons. In the course of a three-picosecond MD simulation, the 2 protons hop around breaking and forming covalent bonds with water molecules. To reproduce motion of protons around the nanodroplet each atom was treated as a localization center. Setting $R_c = 4$~\AA\ and $\Lambda_c = 0.005$~a.u. produces sufficiently optimized CLMOs to ensure the stability of the MD simulation. Figure~\ref{fig:md} shows that the drift in the conserved quantity is acceptably small compared to the magnitude of the fluctuations in the potential energy. The applicability of the LCP method in MD simulations will be explored further especially in conjunction with the modified Langevin integrator method~\cite{scheiber2018communication}. 
+Molecular dynamics (MD) simulations present an even more stringent test on the accuracy of the LCP method. While minor energy errors are not crucial in fixed-nuclei calculations, geometry optimizations, and Monte-Carlo sampling they tend to accumulate in MD trajectories leading to non-physical sampling and eventual failure of simulations. Accurate calculation of forces is therefore crucial for molecular dynamics simulations, the stability of which are judged by the accumulated drift in the conserved quantity (e.g. total energy of the system). Although CLMOs obtained with the LCP method are not strictly variational we chose to neglect this error and invoke the Hellmann--Feynman theorem~\cite{feynman1939forces} in the calculation of atomic forces. This procedure is then used to perform an LCP-based MD simulation of a protonated water nanocluster containing 62 water molecules and two protons. In the course of a three-picosecond MD simulation, the two protons hop around breaking and forming covalent bonds with water molecules. To reproduce motion of protons around the nanodroplet each atom was treated as a localization center. Setting $R_c = 4$~\AA\ and $\Lambda_c = 0.005$~a.u. produces sufficiently optimized CLMOs to ensure the stability of the MD simulation. Figure~\ref{fig:md} shows that the drift in the conserved quantity is acceptably small compared to the magnitude of the fluctuations in the potential energy. The applicability of the LCP method in MD simulations will be explored further especially in conjunction with the modified Langevin integrator method~\cite{scheiber2018communication}. 
 
 \begin{figure}
 \includegraphics[width=0.45\textwidth]{const.eps}
@@ -451,7 +445,7 @@ Molecular dynamics (MD) simulations present an even more stringent test on the a
 
 To test the computational efficiency of the newly designed method, we compared its performance to the orbital transformation (OT) method~\cite{weber2008direct,vandevondele2003efficient} --- a well-optimized low-prefactor cubic scaling DFT method for conventional fully delocalized orbitals. The calculation is done for the hexagonal CdSe system of different sizes. $R_c$ is set to 3.5~{\AA}, which is large enough to accurately describe the electronic structure of the system (Figure~\ref{fig:accuracy}) and $\Lambda_c = 0.02$~a.u. Figure~\ref{fig:scaling} demonstrates that the LCP method is asymptotically LS. The LS regime is achieved when the MO overlap matrix and its inverse are sparse. For a dense 3D system like CdSe it takes on the order of $\sim$3000 atoms. 
 % RZK: Do you have timing DM LS timing for a couple of small systems?
-% What EPS_DEFAULT and EPS_FILTER did you use to perform timing benchmark? Yiei: EPS_DEFAULT: 1E^-12 EPS_FILTER: 1E-8
+% Yiei: EPS_DEFAULT: 1E^-12 EPS_FILTER: 1E-8
 
 \begin{figure}
 \centering
@@ -480,7 +474,7 @@ The developed LS DFT method is expected to have a significant impact on computat
 
 \section{Acknowledgments} The research was funded by the Natural Sciences and Engineering Research Council of Canada through the Discovery Grant (RGPIN-2016-05059). The authors are grateful to Compute Canada for computer time.
 
-%RZK: references should be formatted properly
+%RZK: references should be formatted properly. JCTC strongly recommends using achemso style package
 \bibliography{negref}
 
 \end{document}
