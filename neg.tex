@@ -37,10 +37,10 @@ in density functional theory}
 
 \begin{abstract} 
 Locality of compact one-electron orbitals expanded strictly in terms of local subsets of basis functions can be exploited in density functional theory (DFT) to achieve linear growth of computation time with systems size, crucial in large-scale simulations. 
-Despite conceptual and computational advantages of compact orbitals the development of practical orbital-based linear-scaling DFT methods has long been hindered because a compact representation of the electronic ground state is difficult to find in a variational optimization procedure. 
+However, despite advantages of compact orbitals the development of practical orbital-based linear-scaling DFT methods has long been hindered because a compact representation of the electronic ground state is difficult to find in a variational optimization procedure. 
 In this work, we showed that the slow and unstable optimization of compact orbitals originates from nearly-invariant mixing of occupied orbitals with the states that are mostly but not fully localized within the local vector subspace.
 We proposed a simple and practical method for identifying and removing the problematic nearly-invariant modes using an approximate Hessian and, as a result, developed a robust linear-scaling optimization procedure with a low computational overhead. 
-We demonstrated the new method is highly efficient yet accurate in fixed-nuclei calculations and dynamics simulations for a variety of systems ranging from molecular liquids to semiconductors and insulators.  
+We demonstrated the new method is highly efficient yet accurate in fixed-nuclei calculations and molecular dynamics simulations for a variety of systems ranging from molecular liquids to semiconductors and insulators.  
 \end{abstract}
 \maketitle
 
@@ -372,8 +372,6 @@ As a result, the PCG optimization procedure neglects the low-curvature modes.
 We will refer to the new method based on Eqs.~(\ref{eq:grad-lcp}) and (\ref{eq:prec-lcp}) as low-curvature projector (LCP) method.
 %RZZK- this would be a good place to say a couple of words about the connection of LCP to the two-stage procedure, its trial CLMOs and its weaknesses: dependence on optimization path, absence of a well-defined trial wavefunction.
 %Use this?: We note that upon applying the LCP $\op{Q}_{\bar{x}}$ on the gradient, the final energy is no longer fully variational: the gradient is only zero in diretions that significantly change the energy. It also implies that the energy will depend on the optimization path.
-
-%RZZK: This projection can be understood as a relaxed orthogonality constrain for the CLMOs. 
 
 %RZZK: Add to discussion: One weakness of defining CLMO domains \emph{a priori} in this way is that at least rough idea about the electron distribution in a system is required to assign electrons to localization centers and domains. Such a procedure is, of course, not applicable to systems in which the exact bonding properties are unknown.
 
