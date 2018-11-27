@@ -36,11 +36,7 @@ in density functional theory}
 %\date{\today}
 
 \begin{abstract} 
-Locality of compact one-electron orbitals expanded strictly in terms of local subsets of basis functions can be exploited in density functional theory (DFT) to achieve linear growth of computation time with systems size, crucial in large-scale simulations. 
-However, despite advantages of compact orbitals the development of practical orbital-based linear-scaling DFT methods has long been hindered because a compact representation of the electronic ground state is difficult to find in a variational optimization procedure. 
-In this work, we showed that the slow and unstable optimization of compact orbitals originates from nearly-invariant mixing of occupied orbitals with the states that are mostly but not fully localized within the local vector subspace.
-We proposed a simple and practical method for identifying and removing the problematic nearly-invariant modes using an approximate Hessian and, as a result, developed a robust linear-scaling optimization procedure with a low computational overhead. 
-We demonstrated the new method is highly efficient yet accurate in fixed-nuclei calculations and molecular dynamics simulations for a variety of systems ranging from molecular liquids to semiconductors and insulators.  
+Locality of compact one-electron orbitals expanded strictly in terms of local subsets of basis functions can be exploited in density functional theory (DFT) to achieve linear growth of computation time with systems size, crucial in large-scale simulations. However, despite advantages of compact orbitals the development of practical orbital-based linear-scaling DFT methods has long been hindered because a compact representation of the electronic ground state is difficult to find in a variational optimization procedure. In this work, we showed that the slow and unstable optimization of compact orbitals originates from nearly-invariant mixing of occupied orbitals with the states that are mostly but not fully localized within the local vector subspace. We proposed a simple and practical method for identifying and removing the problematic nearly-invariant modes using an approximate Hessian and, as a result, developed a robust linear-scaling optimization procedure with a low computational overhead. We demonstrated the new method is highly efficient yet accurate in fixed-nuclei calculations and molecular dynamics simulations for a variety of systems ranging from molecular liquids to semiconductors and insulators.  
 \end{abstract}
 \maketitle
 
@@ -416,7 +412,7 @@ Figure~\ref{fig:accuracy} demonstrates that the energy converges to the correct 
 \includegraphics[width=0.35\textwidth]{CdSe_conv}
 \includegraphics[width=0.35\textwidth]{H2O_conv}
 \includegraphics[width=0.35\textwidth]{Si_conv}
-\caption{Energy from the low-curavture projector and the dependence on the localization radii $R_c$ for: A. PBE/DZVP calculation for the hexagonal wurtzite phase of CdSe, B. BLYP/TZV2P calculation for atomically-partitioned liquid water, C. PBE/DZVP calculation for the cubic diamond phase of silicon. The convergence criteria is $\vert\vert \tilde{G} \vert\vert_{\text{max}} < 10^{-5}$~a.u. The zero energy is set at the energy of the fully optimized block-diagonal CLMOs (R$_c = 0$). Dashed line shows the reference energy of conventional DFT calculation (E$_{\text{DFT}}$) without localizatioin constrains (R$_c\rightarrow \infty$). 
+\caption{Energy from the low-curavture projector and the dependence on the localization radii $R_c$ for: A. PBE/DZVP calculation for the hexagonal wurtzite phase of CdSe, B. BLYP/TZV2P calculation for atomically-partitioned liquid water, C. PBE/DZVP calculation for the cubic diamond phase of silicon. The convergence criteria is $\vert\vert \tilde{G} \vert\vert_{\text{max}} < 10^{-5}$~a.u. The zero energy is set at the energy of the fully optimized block-diagonal CLMOs (R$_c = 0$). Dashed line shows the reference energy of conventional DFT calculation (E$_{\text{DFT}}$) without localization constrains (R$_c\rightarrow \infty$). 
 Inset: LCP energy dependence on the low-curvature threshold $\Lambda_c$ at a fixed $R_c$. For the inset, the energy of the unconstrained orbitals is chosen as zero.}
 \label{fig:accuracy}
 \end{figure}
@@ -476,5 +472,19 @@ The developed LS DFT method is expected to have a significant impact on computat
 
 %RZK: references should be formatted properly. JCTC strongly recommends using achemso style package
 \bibliography{negref}
+
+\newpage
+\newpage
+
+%Y. Shi and R. Z. Khaliullin ``Robust linear-scaling optimization of compact localized orbitals in density functional theory''
+
+\begin{figure*}
+\includegraphics[width=3.5in]{toc.pdf}
+\caption{
+Table of Contents use only
+}
+\label{fig:toc}
+\end{figure*}
+
 
 \end{document}
