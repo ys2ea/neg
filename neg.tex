@@ -1,6 +1,7 @@
-\documentclass[aps,prl,twocolumn,reprint,amsmath,amssymb]{revtex4-1}
-
+%\documentclass[aps,prl,twocolumn,reprint,amsmath,amssymb]{revtex4-1}
+\documentclass[10pt,amsmath,twocolumn,aps,prl,superscriptaddress,floatfix]{revtex4-1}
 \usepackage{epsfig,color,graphicx}
+\usepackage[T1]{fontenc}
 \begin{document}
 \newcommand{\Ang}{\ensuremath{\mathring{\text{A}}}}
 \newcommand{\ltwid}{\mathrel{\raise.3ex\hbox{$<$\kern-.75em\lower1ex\hbox{$\sim$}}}}
@@ -23,7 +24,7 @@
 \newcommand{\br}{\ensuremath{\mathbf{r}}}
 \def\nn{\nonumber\\}
 
-\bibliographystyle{apsrev}
+\bibliographystyle{naturemag}
 
 \title{Robust linear-scaling optimization of compact localized orbitals\\
 in density functional theory}
@@ -197,7 +198,7 @@ where $\sigma^{xi,yj}$ is a matrix element of the inverse of the CLMO overlap ma
 
 \subsection{Convergence problem and Hessian eigenspectrum}
 
-The direct minimization of the energy functional with respect to molecular orbital coefficients is a straightforward reliable low-cost method optimization for fully delocalized orbitals ($R_c \rightarrow \infty$)~\cite{galli1992large, vandevondele2003efficient, voorhis2002geometric} and completely localized orbitals ($R_c = 0$)~\cite{khaliullin2013efficient}. 
+The direct minimization of the energy functional with respect to molecular orbital coefficients is a straightforward reliable low-cost method optimization for fully delocalized orbitals ($R_c \rightarrow \infty$)~\cite{galli1992large, vandevondele2003efficient, van2002geometric} and completely localized orbitals ($R_c = 0$)~\cite{khaliullin2013efficient}. 
 % voorhis2002geometric - https://doi.org/10.1080/00268970110103642
 The preconditioned conjugate gradient algorithm (PCG) is a particularly efficient energy minimizer that requires iterative evaluation of the energy gradient
 %
@@ -293,7 +294,7 @@ The norm of the projection of the small-curvature modes on the unoccupied subspa
 Preconditioner eigenvectors with the eigenvalues smaller than 0.02~a.u. are chosen as small-curvature modes. 
 The following localization ceneters are considered: Ti$^{4+}$ ions in the TiO$_2$ rutile lattice, Cd$^{2+}$ ions in the CdSe Wurtzite lattice, Si atom in the diamond silicon lattice, O$^{2-}$ in a water tetramer system, hydrogen fluoride molecule in a linear tetramer system. 
 The BLYP/TZV2P level of theory is used for water and PBE/DZVP in all other tests.}
-%RZK: In the graph, change "+4" to "4+" 
+
 \label{fig:projection}
 \end{figure}
 
@@ -383,7 +384,7 @@ We will refer to the new method based on Eqs.~(\ref{eq:grad-lcp}) and (\ref{eq:p
 
 \subsection{Implementation}
 
-The procedure for finding and projecting out the low-curvature modes is implemented in the CP2K software package~\cite{cp2kgeneral}. CP2K relies on the mixed Gaussian and plane wave representation of the electronic degrees of freedom~\cite{vandevondele2005quickstep} and is an ideal platform for the new orbital-based LS method: just a few tightly-localized Gaussian AOs can provide an accurate representation of CLMOs, whereas plane waves ensure a fast LS construction of the KS Hamiltonian for large systems.
+The procedure for finding and projecting out the low-curvature modes is implemented in the CP2K software package~\cite{www:cp2k}. CP2K relies on the mixed Gaussian and plane wave representation of the electronic degrees of freedom~\cite{vandevondele2005quickstep} and is an ideal platform for the new orbital-based LS method: just a few tightly-localized Gaussian AOs can provide an accurate representation of CLMOs, whereas plane waves ensure a fast LS construction of the KS Hamiltonian for large systems.
 
 All matrix multiplications are performed with the DBCSR library~\cite{borvstnik2014sparse} designed for massively-parallel linear-scaling handling of large sparse matrices. 
 A special care is taken to reduce the computational overhead of the optimization procedure for large Gaussian basis sets. 
@@ -451,8 +452,6 @@ To test the computational efficiency of the newly designed method, we compared i
 \centering
 \includegraphics[width=0.45\textwidth]{timing}
 \caption{CLMO optimization timing benchmark for the hexagonal CdSe lattice. The PBE/DZVP calculation with $R_c=3.5$~{\AA} and $\Lambda_c = 0.02$~a.u. is done on 256 compute cores. 
-% RZK: "Hessian filter" -> "LCP"
-% RZK "OT" -> "Orbital transformation"
 }
 \label{fig:scaling}
 \end{figure}
