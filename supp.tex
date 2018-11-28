@@ -71,12 +71,12 @@ The preconditioner defined in the main text is an approximation to this Hessian.
 
 \section{Eigenvalues of the preconditioner} 
 
-Figure~\ref{sfig:hesseig} shows the eigenvalues of the preconditioner for several cases in a typical calculation. For completely delocalized orbitals, the eigenvalues are either exactly zero (occupied-occupied mixing) or very large (occupied-virtual mixing). For the straightforward optimization of CLMOs, the eigenvalue spectrum is continuous and low-curvature modes exist. For the optimization with the low-curvature projector (LCP) and $\Lambda_{c}=RZK$~a.u., the small and large eigenvalues are again separated. %after removing some of the small eigenvectors.
+Figure~\ref{sfig:hesseig} shows the eigenvalues of the preconditioner for several cases in a typical calculation. For completely delocalized orbitals, the eigenvalues are either exactly zero (occupied-occupied mixing) or very large (occupied-virtual mixing). For the straightforward optimization of CLMOs, the eigenvalue spectrum is continuous and low-curvature modes exist. For the optimization with the low-curvature projector (LCP) and $\Lambda_{c}=0.02$~a.u., the small and large eigenvalues are again separated. %after removing some of the small eigenvectors.
 
 \begin{figure}[t!]
 \centering
 \includegraphics[width=0.4\textwidth]{Hesseig}
-\caption{Eigenvalues of the preconditioner in the final stages of the PBE/DZVP orbital optimization for hexagonal CdSe lattice with eight atoms. To display the zero eigenvalues on the logarithmic scale, all eigenvalues values are shifted up by $10^{-RZK}$~a.u. For the CLMO optimization, the localization domain includes the central Cd$^{2+}$ ion and three Se$^{2-}$ ions. For the delocalized orbitals, the domain includes the entire system and only low eigenvalues are shown. For the CLMO optimization without the low-curvature projector, the calculation does not converge and the preconditioner is evaluated at final iterations, for which the energy is close to the ground state.}
+\caption{Eigenvalues of the preconditioner in the final stages of the PBE/DZVP orbital optimization for hexagonal CdSe lattice with eight atoms. To display the zero eigenvalues on the logarithmic scale, all eigenvalues values are shifted up by $10^{-4}$~a.u. For the CLMO optimization, the localization domain includes the central Cd$^{2+}$ ion and three Se$^{2-}$ ions. For the delocalized orbitals, the domain includes the entire system and only low eigenvalues are shown. For the CLMO optimization without the low-curvature projector, the calculation does not converge and the preconditioner is evaluated at final iterations, for which the energy is close to the ground state.}
 %RZK "Hessian eigen values" -> "Eigenvalues, a.u." 
 %RZK "Delocalized DFT" -> "Delocalized orbitals"
 %RZK "CLMO No-Low-curvature-projector" -> "CLMO without LCP"
@@ -114,7 +114,7 @@ Here, we discuss the dependence of residues $\Delta$ on dimensionless parameter 
 M^{\bar{x}}_{yj} \equiv \bra{\psi_{yj}} (\op{I} - \op{I}_{\bar{x}}) \ket{\psi_{yj}}
 \eea
 %
-% RZK: state \ket{\psi_{yj}} should be normalized
+% RZK: state \ket{\psi_{yj}} should be normalized Yifei: It is normalized in the calculation
 Second, we include only those $\ket{\psi_{yi}}$ states into $\op{R}_{\bar{x}}$ whose presence outside $\bar{x}$ is below
 \bea
 M^{\bar{x}}_{yj} < t
