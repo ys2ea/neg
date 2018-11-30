@@ -2,23 +2,24 @@
 \documentclass[10pt,amsmath,twocolumn,aps,prl,superscriptaddress,floatfix]{revtex4-1}
 \usepackage{epsfig,color,graphicx}
 \usepackage[T1]{fontenc}
+
 \begin{document}
 \newcommand{\Ang}{\ensuremath{\mathring{\text{A}}}}
-\newcommand{\ltwid}{\mathrel{\raise.3ex\hbox{$<$\kern-.75em\lower1ex\hbox{$\sim$}}}}
-\newcommand{\gtwid}{\mathrel{\raise.3ex\hbox{$>$\kern-.75em\lower1ex\hbox{$\sim$}}}}
+%\newcommand{\ltwid}{\mathrel{\raise.3ex\hbox{$<$\kern-.75em\lower1ex\hbox{$\sim$}}}}
+%\newcommand{\gtwid}{\mathrel{\raise.3ex\hbox{$>$\kern-.75em\lower1ex\hbox{$\sim$}}}}
 \newcommand{\ket}[1]{\ensuremath{\vert #1 \rangle}}
 \newcommand{\bra}[1]{\ensuremath{\langle #1 \vert}}
 \newcommand{\braket}[2]{\ensuremath{\langle #1 \vert #2 \rangle}} % bra-ket inner product
 \newcommand{\ketbra}[2]{\ensuremath{\vert #1 \rangle \langle #2 \vert}} % ket-bra outer product
 \newcommand{\op}[1]{\ensuremath{\hat{#1}}} % operator
 %\newcommand{\sill}{\psi_\mathrm{SILL}}
-\newcommand{\sill}{\psi}
+%\newcommand{\sill}{\psi}
 \newcommand{\trace}{{\rm Tr}}
-\newcommand{\ntilde}{\tilde{n}}
-\newcommand{\stilde}{\tilde{s}}
-\newcommand{\atilde}{\tilde{\alpha}}
-\newcommand{\new}{\color{red}}
-\newcommand{\old}{\color{black}}
+%\newcommand{\ntilde}{\tilde{n}}
+%\newcommand{\stilde}{\tilde{s}}
+%\newcommand{\atilde}{\tilde{\alpha}}
+%\newcommand{\new}{\color{red}}
+%\newcommand{\old}{\color{black}}
 \newcommand{\bea}{\begin{eqnarray}}
 \newcommand{\eea}{\end{eqnarray}}
 \newcommand{\br}{\ensuremath{\mathbf{r}}}
@@ -37,7 +38,7 @@ in density functional theory}
 %\date{\today}
 
 \begin{abstract} 
-Locality of compact one-electron orbitals expanded strictly in terms of local subsets of basis functions can be exploited in density functional theory (DFT) to achieve linear growth of computation time with systems size, crucial in large-scale simulations. However, despite advantages of compact orbitals the development of practical orbital-based linear-scaling DFT methods has long been hindered because a compact representation of the electronic ground state is difficult to find in a variational optimization procedure. In this work, we showed that the slow and unstable optimization of compact orbitals originates from nearly-invariant mixing of occupied orbitals with the states that are mostly but not fully localized within the local vector subspace. We proposed a simple and practical method for identifying and removing the problematic nearly-invariant modes using an approximate Hessian and, as a result, developed a robust linear-scaling optimization procedure with a low computational overhead. We demonstrated the new method is highly efficient yet accurate in fixed-nuclei calculations and molecular dynamics simulations for a variety of systems ranging from molecular liquids to semiconductors and insulators.  
+Locality of compact one-electron orbitals expanded strictly in terms of local subsets of basis functions can be exploited in density functional theory (DFT) to achieve linear growth of computation time with systems size, crucial in large-scale simulations. However, despite advantages of compact orbitals the development of practical orbital-based linear-scaling DFT methods has long been hindered because a compact representation of the electronic ground state is difficult to find in a variational optimization procedure. In this work, we showed that the slow and unstable optimization of compact orbitals originates from nearly-invariant mixing of occupied orbitals with the states that are mostly but not fully localized within the local vector subspace. We proposed a simple and practical method for identifying and removing the problematic nearly-invariant modes using an approximate Hessian and, as a result, developed a robust linear-scaling optimization procedure with a low computational overhead. We demonstrated the new method is highly efficient yet accurate in fixed-nuclei calculations and molecular dynamics simulations for a variety of systems ranging from semiconductors to insulators.  
 \end{abstract}
 \maketitle
 
@@ -262,7 +263,7 @@ This component is measured by the residue $\Delta_{\bar{x}p}$
 \Delta_{\bar{x}p} \equiv \bra{d_{\bar{x}p}} \op{I}_{\bar{x}} - \op{R}_{\bar{x}} \ket{d_{\bar{x}p}}, 
 \eea
 %
-where $\op{R}_{\bar{x}}$ is a projector constructed from the occupied CLMOs of the neighbors truncated to the subspace $\bar{x}$ with operator $\op{T}_{\bar{x}} \approx \op{I}_{\bar{x}}$
+where $\op{R}_{\bar{x}}$ is a projector onto the subspace of the occupied CLMOs trimmed with operator $\op{T}_{\bar{x}} \approx \op{I}_{\bar{x}}$ to be fully localized on $\bar{x}$ 
 \bea
 \op{R}_{\bar{x}} &=& \sum_{y,z \in \bar{x}} \op{T}_{\bar{x}} \ket{\psi_{yi}} \sigma_{\bar{x}}^{yi,zj} \bra{\psi_{zj}} \op{T}_{\bar{x}}
 %R^{\bar{x}\mu,\bar{x}\nu} &\equiv& \bra{\chi^{\bar{x}\mu}} \op{R}_{\bar{x}} \ket{\chi^{\bar{x}\nu}} \\
@@ -301,28 +302,39 @@ The proposed explanation of the nature of the low-curvature modes is consistent 
 \eea
 %
 For these CLMOs, the gradient and preconditioner
+%%
+%\bea \label{eq:grad-bar}
+%\bar{G}{_{\bar{x}\mu}}^{xi} &\equiv & \frac{\partial E}{\partial \bar{T}^{{\bar{x}\mu}}_{xi}} = 
+%\bra{\chi_{\bar{x}\mu}} \op{Q}_{\bar{x}}^{0} \ket{\chi^{\bar{x}\nu}} {G_{\bar{x}\nu}}^{xi}
+%\eea
+%%
 %
 \bea \label{eq:grad-bar}
 \bar{G}{_{\bar{x}\mu}}^{xi} &\equiv & \frac{\partial E}{\partial \bar{T}^{{\bar{x}\mu}}_{xi}} = 
-%4 \bra{\chi_{\bar{x}\mu}} \op{Q}_{\bar{x}}^{0} (\op{I}-\op{R}) \op{H} \ket{\psi^{xi}} = \nonumber \\
-%&=& 
-\bra{\chi_{\bar{x}\mu}} \op{Q}_{\bar{x}}^{0} \ket{\chi^{\bar{x}\nu}} {G_{\bar{x}\nu}}^{xi}
+\bra{\chi_{\bar{x}\mu}} \op{I} - \op{R}^{0} \ket{\chi^{\bar{x}\nu}} {G_{\bar{x}\nu}}^{xi}
 \eea
+%%
+%\bea \label{eq:prec-bar}
+%\bar{P}_{\bar{x}\mu,\bar{x}\nu} &=& 
+%\bra{\chi_{\bar{x}\mu}} \op{Q}_{\bar{x}}^{0} \ket{\chi^{\bar{x}\lambda}}  P_{\bar{x}\lambda,\bar{x}\kappa} \bra{\chi^{\bar{x}\kappa}} \op{Q}_{\bar{x}}^{0} \ket{\chi_{\bar{x}\nu}}
+%\eea
+%%
 %
 \bea \label{eq:prec-bar}
 \bar{P}_{\bar{x}\mu,\bar{x}\nu} &=& 
-%\bra{\chi_{\bar{x}\mu}} (\op{I} - \op{R}^{0} ) \ket{\chi^{\bar{x}\lambda}}  P_{\bar{x}\lambda,\bar{x}\kappa} \bra{\chi^{\bar{x}\kappa}} (\op{I} - \op{R}^{0} ) \ket{\chi_{\bar{x}\nu}}
-\bra{\chi_{\bar{x}\mu}} \op{Q}_{\bar{x}}^{0} \ket{\chi^{\bar{x}\lambda}}  P_{\bar{x}\lambda,\bar{x}\kappa} \bra{\chi^{\bar{x}\kappa}} \op{Q}_{\bar{x}}^{0} \ket{\chi_{\bar{x}\nu}}
+\bra{\chi_{\bar{x}\mu}} \op{I} - \op{R}^{0} \ket{\chi^{\bar{x}\lambda}}  P_{\bar{x}\lambda,\bar{x}\kappa} \bra{\chi^{\bar{x}\kappa}} \op{I} - \op{R}^{0} \ket{\chi_{\bar{x}\nu}} \nonumber \\
 \eea
 %
-are related to those in Eqs.~(\ref{eq:grad}) and~(\ref{eq:prec}) via domain-specific projectors
+are related to those in Eqs.~(\ref{eq:grad}) and~(\ref{eq:prec}) via domain-specific operators
+% $\op{I}_{\bar{x}} (\op{I} - \op{R}^{0} ) \op{I}_{\bar{x}}$.
 %
 \bea \label{eq:q0}
-\op{Q}_{\bar{x}}^{0} &\equiv & \op{I}_{\bar{x}} (\op{I} - \op{R}^{0} ) \op{I}_{\bar{x}}
+%\op{Q}_{\bar{x}}^{0} &\equiv & 
+\op{I}_{\bar{x}} (\op{I} - \op{R}^{0} ) \op{I}_{\bar{x}}
 \eea
 %
 
-As shown in Ref.~\onlinecite{khaliullin2013efficient}, projector $\op{Q}_{\bar{x}}^{0}$ is key to converge orbital optimization for molecular systems. The present work explains that this is because $\op{Q}_{\bar{x}}^{0}$ satisfies two important requirements. First, it is constructed from CLMOs fully localized on their centers. This ensures that each domain contains an integer number of occupied dimensions. Second, it is constructed from $\op{R}^0$ that is already close to the final converged DM. This, therefore, guarantees that $\op{Q}_{\bar{x}}^{0}$ removes the low-curvature optimization modes.  
+As shown in Ref.~\onlinecite{khaliullin2013efficient}, these operators are essential to converging orbital optimization for molecular systems. The present work explains that this is because $\op{R}^{0}$ satisfies two important requirements. First, it is constructed from CLMOs fully localized on their centers. This ensures that each localization domain contains an integer number of occupied states. Second, $\op{R}^0$ is already close to the final converged DM for systems of weakly-interacting molecules. This, therefore, guarantees that correct low-curvature optimization modes are removed when in the second optimization stage when $\op{I}_{\bar{x}} \op{R}^{0} \op{I}_{\bar{x}}$ is projected out.  
 
 Unfortunately, the two-stage approach does not work for systems with strong covalent bonds between localization centers (i.e. atoms). This is illustrated in Figure~\ref{fig:convergence} for the cadmium selenide lattice. The main reason for the deteriorating convergence is the inability of $\op{R}^0$, which is constructed from the block-diagonal CLMOs, to adequately represents the low-curvature modes in the delocalized states encountered in later stages of the optimization. 
 
@@ -339,44 +351,51 @@ Unfortunately, the two-stage approach does not work for systems with strong cova
 
 We propose to solve the convergence problem by detecting the low-curvature modes directly by diagonalizing the approximate Hessian in Eq.~(\ref{eq:prec}) and avoiding the optimization along these modes altogether. Although this procedure does not produce fully optimized orbitals they are still expected to provide accurate representation of the ground state. This is because the low-curvature modes are associated mostly with mixing of occupied and nearly-occupied orbitals and, therefore, are expected to be \emph{shallow} optimization directions. That is, they are unlikely to produce a noticeable variational decrease in the energy.
 
-To filter out the low-curvature modes we construct a projector
+To filter out the low-curvature modes we construct the projector onto these modes
 %
 \bea
-%L^{\bar{x}\mu,\bar{x}\nu} &=& {A^{\bar{x}\mu}}_{xp} \Theta_{xp} {A^{\bar{x}\nu}}_{xp} \\
-\op{Q}_{\bar{x}} &=& \ket{d_{\bar{x}p}} \, \Theta\left[ \Lambda_{\bar{x}p} - \Lambda_c \right] \bra{d_{\bar{x}p}},
+\op{L}_{\bar{x}} &=& \ket{d_{\bar{x}p}} \, \Theta\left[ \Lambda_{\bar{x}p} - \Lambda_c \right] \bra{d_{\bar{x}p}},
 \eea
 %
-where \bra{d_{\bar{x}p}} are eigenvectors of the approximate Hessian from Eq.~(\ref{eq:gev}) and $\Theta$ is the unit step function 
+where \bra{d_{\bar{x}p}} are eigenvectors of the approximate Hessian from Eq.~(\ref{eq:gev}), $\Theta$ is the reversed unit step function 
 \bea
 \Theta \left[\Lambda_{\bar{x}p} - \Lambda_c \right] =
 \begin{cases} 
-      0 & \Lambda_{\bar{x}p} \leq \Lambda_c ,\\
-      1 & \Lambda_{\bar{x}p} \geq \Lambda_c
+      1 & \Lambda_{\bar{x}p} \leq \Lambda_c ,\\
+      0 & \Lambda_{\bar{x}p} > \Lambda_c,
 \end{cases}
 \eea
 %
-and $\Lambda_c$ is the curvature threshold below which the optimization mode is classified as a low-curvature mode. This projector is then applied to the gradient and preconditioner in the PCG optimization algorithm
+and $\Lambda_c$ is the curvature threshold below which the optimization mode is classified as a low-curvature mode. The low curvature modes are then projected out from the the gradient and preconditioner in the PCG optimization algorithm
 %
-\bea
-\tilde{G}{_{\bar{x}\mu}}^{xi} &=& \bra{\chi_{\bar{x}\mu}} \op{Q}_{\bar{x}} \ket{\chi^{\bar{x}\nu}} {G_{\bar{x}\nu}}^{xi} \label{eq:grad-lcp} \\
+\bea \label{eq:grad-lcp} 
+\tilde{G}{_{\bar{x}\mu}}^{xi} &=& \bra{\chi_{\bar{x}\mu}} \op{I} - \op{L}_{\bar{x}} \ket{\chi^{\bar{x}\nu}} {G_{\bar{x}\nu}}^{xi} 
 %
-\tilde{P}_{\bar{x}\mu,\bar{x}\nu} &=& \bra{\chi_{\bar{x}\mu}} \op{Q}_{\bar{x}} \ket{\chi^{\bar{x}\lambda}}  P_{\bar{x}\lambda,\bar{x}\kappa} \bra{\chi^{\bar{x}\kappa}} \op{Q}_{\bar{x}} \ket{\chi_{\bar{x}\nu}} \label{eq:prec-lcp}.
 \eea
 %
-As a result, the PCG optimization procedure neglects the low-curvature modes. 
-%Hopefully, the energy changes associated with them are  small. 
+\bea \label{eq:prec-lcp}
+\tilde{P}_{\bar{x}\mu,\bar{x}\nu} &=& \bra{\chi_{\bar{x}\mu}} \op{I} - \op{L}_{\bar{x}} \ket{\chi^{\bar{x}\lambda}}  P_{\bar{x}\lambda,\bar{x}\kappa} \bra{\chi^{\bar{x}\kappa}} \op{I} - \op{L}_{\bar{x}} \ket{\chi_{\bar{x}\nu}}. \nonumber \\
+\eea
+%
+As a result, the PCG optimization procedure neglects the optimization modes with the curvature below pre-selected threshold $\Lambda_c$.
 
 We will refer to the new method based on Eqs.~(\ref{eq:grad-lcp}) and (\ref{eq:prec-lcp}) as low-curvature projector (LCP) method.
-%RZZK- this would be a good place to say a couple of words about the connection of LCP to the two-stage procedure, its trial CLMOs and its weaknesses: dependence on optimization path, absence of a well-defined trial wavefunction.
-%Use this?: We note that upon applying the LCP $\op{Q}_{\bar{x}}$ on the gradient, the final energy is no longer fully variational: the gradient is only zero in diretions that significantly change the energy. It also implies that the energy will depend on the optimization path.
 
-%RZZK: Add to discussion: One weakness of defining CLMO domains \emph{a priori} in this way is that at least rough idea about the electron distribution in a system is required to assign electrons to localization centers and domains. Such a procedure is, of course, not applicable to systems in which the exact bonding properties are unknown.
+\subsection{Remarks}
 
-%RZZK: Discuss advantages and weaknesses of the new method: (a) We are giving up a strict energy functional. As a consequence, the final energy may depend on the optimization path (i.e. how often the PCG is restarted and preconditioner is recalculated). However, we demonstrate that the dependence of the energy on optimization path is insignificant and the final energy is close to the ground state. Moreover, the proposed method passes even more stringent test: it appears to produce stable molecular dynamics trajectories. As stated before, the filtered directions should be primarily occupied-occupied mixing, so that physically meaning full directions are not neglected and the final state is close to the true ground state. 
+It is important to make several remarks about the LCP method. Although the gradient and preconditioner equations of the LCP approach resemble those of the two-stage procedure the key difference between them is that $\op{L}_{\bar{x}}$ depends on the variational parameters $T$ while $\op{I}_{\bar{x}}\op{R}^{0}\op{I}_{\bar{x}}$ does not. As a consequence, there is no a well-defined trial orbitals and energy functional that correspond to the LCP gradient exactly. However, the LCP gradient in Eq.~(\ref{eq:grad-lcp}) is an approximation to the gradient of the conventional energy functional with the following trial CLMOs
+%
+\bea \label{eq:telescopic-trial}
+\ket{\psi_{xi}} &=& \op{I}_{\bar{x}} (\op{I} - \op{R}_{\bar{x}} ) \ket{\chi_{\bar{x}\mu}} {T^{\bar{x}\mu}}_{xi}
+\eea
+%
+where $\op{R}_{\bar{x}}$ is defined in Eq.~(\ref{eq:C}) as the $T$-dependent projector onto the subspace of the CLMOs that are truncated to be fully localized on $\bar{x}$. The LCP gradient can be obtained from these trial orbitals if the $T$-dependence of $\op{R}_{\bar{x}}$ is ignored upon differentiation and $\op{R}_{\bar{x}}$ is approximated with the low-curvature projector $\op{L}_{\bar{x}}$. As described above the latter approximation makes sense because the low-curvature modes arise from the incomplete localization of the neighbors' CLMOs on $\bar{x}$. 
 
-%RZZK: The physical meaning of Eq~\ref{eq:approxq} is a modified orthogonality constrain for LMOs. Orthognality and locality has generally been considered as competing properties: strict orthogonality leads to decaying tails, and for LMOs no orthogonality constrains are imposed except for MOs within a fragment. However, this causes the convergence problem previously mentioned: LMOs without orthogonality tends to collapse. Although global orthogonality cannot be achieved, we suggest a local orthogonality constrain, that the projection of MOs onto each fragment $x$ should be orthogonal. Unlike the case for none-local MOs, not every physical state can be transformed into such state.
+It is worth mentioning in passing that finding the exact gradient of the trial CLMOs in Eq.~(\ref{eq:telescopic-trial}) is tremendously difficult both analytically and algorithmically because of the cyclic dependence of $\op{R}_{\bar{x}}$ and $\ket{\psi_{xi}}$ on each other. The LCP approach described here represents a compromise between a computationally efficient and fully variational optimization.
 
-%RZZK: While many previous works~\cite{RZZK} dealt with weakly-interacting fragments (e.g. molecules) the approach here represents the ultimate atomic partitioning scheme.
+While previous CLMO works~\cite{tsuchida2007augmented, tsuchida2008ab, khaliullin2013efficient} dealt with weakly-interacting fragments (e.g. molecules) the LCP approach represents the ultimate atomic partitioning scheme that draws fragment boundaries across strong covalent bonds. Although the LCP optimization is not fully variational it finds the orbitals and energy very close to the ground state if $\Lambda_c$ is small. Moreover, the LCP approach passes even more stringent test as it appears to produce stable molecular dynamics description of chemical reactions. 
+
+It should be noted that any divide-and-conquer approach, including the LCP method, assigns electrons to localization centers \emph{a priori} and, therefore, requires at least a rough idea about the optimal electron distribution. Although the LCP procedure presented here is not applicable to systems with completely unknown bonding properties this issue can be resolved by employing the global optimizer described in Ref.~\onlinecite{kim1995total} in conjunction with the current approach.
 
 \subsection{Implementation}
 
@@ -465,25 +484,498 @@ The new methodology, which is expected to be applicable to systems with nonvanis
 These tests demonstrate that the method is accurate and efficient even when localization centers are represented by single atoms and there are strong covalent interaction between the centers. 
 Furthermore, preliminary tests on protonated water nanoclusters suggest that the atomic partitioning does not present problems for the new method and it is sufficiently robust to enable stable molecular dynamics simulation of bond-breaking and formation processes. 
 
-The developed LS DFT method is expected to have a significant impact on computational modeling of complex systems due to its low computational overhead, enabling calculations on previously inaccessible time and length scales and making completely new chemical phenomena amenable to simulations.
+The developed LS DFT method is expected to have a significant impact on computational modeling of complex systems. Due to its low computational overhead, the method will enable DFT calculations on previously inaccessible length scales making completely new chemical phenomena amenable to simulations.
 
 \section{Acknowledgments} The research was funded by the Natural Sciences and Engineering Research Council of Canada through the Discovery Grant (RGPIN-2016-05059). The authors are grateful to Compute Canada for computer time.
 
-%RZK: references should be formatted properly. JCTC strongly recommends using achemso style package
-\bibliography{negref}
+%\bibliography{negref}
 
-\newpage
-\newpage
+\begin{thebibliography}{10}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\providecommand{\bibinfo}[2]{#2}
+\providecommand{\eprint}[2][]{\url{#2}}
 
-%Y. Shi and R. Z. Khaliullin ``Robust linear-scaling optimization of compact localized orbitals in density functional theory''
+\bibitem{goedecker1999linear}
+\bibinfo{author}{Goedecker, S.}
+\newblock \bibinfo{title}{Linear scaling electronic structure methods}.
+\newblock \emph{\bibinfo{journal}{Rev. Mod. Phys.}}
+  \textbf{\bibinfo{volume}{71}}, \bibinfo{pages}{1085} (\bibinfo{year}{1999}).
 
-\begin{figure*}
-\includegraphics[width=3.5in]{toc.pdf}
-\caption{
-Table of Contents use only
-}
-\label{fig:toc}
-\end{figure*}
+\bibitem{bowler2012methods}
+\bibinfo{author}{Bowler, D.} \& \bibinfo{author}{Miyazaki, T.}
+\newblock \bibinfo{title}{Methods in electronic structure calculations}.
+\newblock \emph{\bibinfo{journal}{Rep. Prog. Phys.}}
+  \textbf{\bibinfo{volume}{75}}, \bibinfo{pages}{036503}
+  (\bibinfo{year}{2012}).
 
+\bibitem{zalesny2011linear}
+\bibinfo{author}{Zale{\'s}ny, R.}, \bibinfo{author}{Papadopoulos, M.~G.},
+  \bibinfo{author}{Mezey, P.~G.} \& \bibinfo{author}{Leszczynski, J.}
+\newblock \emph{\bibinfo{title}{Linear-Scaling Techniques in Computational
+  Chemistry and Physics: Methods and Applications}}, vol.~\bibinfo{volume}{13}
+  (\bibinfo{publisher}{Springer Science \& Business Media},
+  \bibinfo{year}{2011}).
+
+\bibitem{li1993density}
+\bibinfo{author}{Li, X.-P.}, \bibinfo{author}{Nunes, R.} \&
+  \bibinfo{author}{Vanderbilt, D.}
+\newblock \bibinfo{title}{Density-matrix electronic-structure method with
+  linear system-size scaling}.
+\newblock \emph{\bibinfo{journal}{Phys. Rev. B}} \textbf{\bibinfo{volume}{47}},
+  \bibinfo{pages}{10891} (\bibinfo{year}{1993}).
+
+\bibitem{lee1996linear}
+\bibinfo{author}{Lee, T.-S.}, \bibinfo{author}{York, D.~M.} \&
+  \bibinfo{author}{Yang, W.}
+\newblock \bibinfo{title}{Linear-scaling semiempirical quantum calculations for
+  macromolecules}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{105}}, \bibinfo{pages}{2744--2750}
+  (\bibinfo{year}{1996}).
+
+\bibitem{li2003density}
+\bibinfo{author}{Li, X.~S.}, \bibinfo{author}{Millam, J.~M.},
+  \bibinfo{author}{Scuseria, G.~E.}, \bibinfo{author}{Frisch, M.~J.} \&
+  \bibinfo{author}{Schlegel, H.~B.}
+\newblock \bibinfo{title}{Density matrix search using direct inversion in the
+  iterative subspace as a linear scaling alternative to diagonalization in
+  electronic structure calculations}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{119}}, \bibinfo{pages}{7651} (\bibinfo{year}{2003}).
+
+\bibitem{shao2003curvy}
+\bibinfo{author}{Shao, Y.}, \bibinfo{author}{Saravanan, C.},
+  \bibinfo{author}{Head-Gordon, M.} \& \bibinfo{author}{White, C.~A.}
+\newblock \bibinfo{title}{Curvy steps for density matrix-based energy
+  minimization: Application to large-scale self-consistent-field calculations}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{118}}, \bibinfo{pages}{6144} (\bibinfo{year}{2003}).
+
+\bibitem{vandevondele2012linear}
+\bibinfo{author}{VandeVondele, J.}, \bibinfo{author}{Borstnik, U.} \&
+  \bibinfo{author}{Hutter, J.}
+\newblock \bibinfo{title}{Linear scaling self-consistent field calculations
+  with millions of atoms in the condensed phase}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Theory Comput.}}
+  \textbf{\bibinfo{volume}{8}}, \bibinfo{pages}{3565--3573}
+  (\bibinfo{year}{2012}).
+
+\bibitem{kussmann2013linear}
+\bibinfo{author}{Kussmann, J.}, \bibinfo{author}{Beer, M.} \&
+  \bibinfo{author}{Ochsenfeld, C.}
+\newblock \bibinfo{title}{Linear-scaling self-consistent field methods for
+  large molecules}.
+\newblock \emph{\bibinfo{journal}{Wiley Interdisciplinary Reviews:
+  Computational Molecular Science}} \textbf{\bibinfo{volume}{3}},
+  \bibinfo{pages}{614--636} (\bibinfo{year}{2013}).
+
+\bibitem{aarons2016perspective}
+\bibinfo{author}{Aarons, J.}, \bibinfo{author}{Sarwar, M.},
+  \bibinfo{author}{Thompsett, D.} \& \bibinfo{author}{Skylaris, C.-K.}
+\newblock \bibinfo{title}{Perspective: Methods for large-scale density
+  functional calculations on metallic systems}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{145}}, \bibinfo{pages}{220901}
+  (\bibinfo{year}{2016}).
+
+\bibitem{goedecker1994efficient}
+\bibinfo{author}{Goedecker, S.} \& \bibinfo{author}{Colombo, L.}
+\newblock \bibinfo{title}{Efficient linear scaling algorithm for tight-binding
+  molecular dynamics}.
+\newblock \emph{\bibinfo{journal}{Phys. Rev. Lett.}}
+  \textbf{\bibinfo{volume}{73}}, \bibinfo{pages}{122} (\bibinfo{year}{1994}).
+
+\bibitem{goedecker1995tight}
+\bibinfo{author}{Goedecker, S.} \& \bibinfo{author}{Teter, M.}
+\newblock \bibinfo{title}{Tight-binding electronic-structure calculations and
+  tight-binding molecular dynamics with localized orbitals}.
+\newblock \emph{\bibinfo{journal}{Phys. Rev. B}} \textbf{\bibinfo{volume}{51}},
+  \bibinfo{pages}{9455} (\bibinfo{year}{1995}).
+
+\bibitem{yang1991direct}
+\bibinfo{author}{Yang, W.}
+\newblock \bibinfo{title}{Direct calculation of electron density in
+  density-functional theory}.
+\newblock \emph{\bibinfo{journal}{Phys. Rev. Lett.}}
+  \textbf{\bibinfo{volume}{66}}, \bibinfo{pages}{1438} (\bibinfo{year}{1991}).
+
+\bibitem{yang1991local}
+\bibinfo{author}{Yang, W.}
+\newblock \bibinfo{title}{A local projection method for the linear combination
+  of atomic orbital implementation of density-functional theory}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{94}}, \bibinfo{pages}{1208--1214}
+  (\bibinfo{year}{1991}).
+
+\bibitem{arita2014stable}
+\bibinfo{author}{Arita, M.}, \bibinfo{author}{Bowler, D.~R.} \&
+  \bibinfo{author}{Miyazaki, T.}
+\newblock \bibinfo{title}{Stable and efficient linear scaling first-principles
+  molecular dynamics for 10000+ atoms}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Theory Comput.}}
+  \textbf{\bibinfo{volume}{10}}, \bibinfo{pages}{5419--5425}
+  (\bibinfo{year}{2014}).
+
+\bibitem{khaliullin2013efficient}
+\bibinfo{author}{Khaliullin, R.~Z.}, \bibinfo{author}{VandeVondele, J.} \&
+  \bibinfo{author}{Hutter, J.}
+\newblock \bibinfo{title}{Efficient linear-scaling density functional theory
+  for molecular systems}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Theory Comput.}}
+  \textbf{\bibinfo{volume}{9}}, \bibinfo{pages}{4421--4427}
+  (\bibinfo{year}{2013}).
+
+\bibitem{richters2014self}
+\bibinfo{author}{Richters, D.} \& \bibinfo{author}{K{\"u}hne, T.~D.}
+\newblock \bibinfo{title}{Self-consistent field theory based molecular dynamics
+  with linear system-size scaling}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{140}}, \bibinfo{pages}{134109}
+  (\bibinfo{year}{2014}).
+
+\bibitem{goringe1997tight}
+\bibinfo{author}{Goringe, C.}, \bibinfo{author}{Bowler, D.} \&
+  \bibinfo{author}{Hernandez, E.}
+\newblock \bibinfo{title}{Tight-binding modelling of materials}.
+\newblock \emph{\bibinfo{journal}{Rep. Prog. Phys.}}
+  \textbf{\bibinfo{volume}{60}}, \bibinfo{pages}{1447} (\bibinfo{year}{1997}).
+
+\bibitem{ratcliff2018band}
+\bibinfo{author}{Ratcliff, L.}, \bibinfo{author}{Conduit, G.},
+  \bibinfo{author}{Hine, N.} \& \bibinfo{author}{Haynes, P.}
+\newblock \bibinfo{title}{Band structure interpolation using optimized local
+  orbitals from linear-scaling density functional theory}.
+\newblock \emph{\bibinfo{journal}{Phys. Rev. B}} \textbf{\bibinfo{volume}{98}},
+  \bibinfo{pages}{125123} (\bibinfo{year}{2018}).
+
+\bibitem{skylaris2005introducing}
+\bibinfo{author}{Skylaris, C.-K.}, \bibinfo{author}{Haynes, P.~D.},
+  \bibinfo{author}{Mostofi, A.~A.} \& \bibinfo{author}{Payne, M.~C.}
+\newblock \bibinfo{title}{Introducing onetep: Linear-scaling density functional
+  simulations on parallel computers}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{122}}, \bibinfo{pages}{084119}
+  (\bibinfo{year}{2005}).
+
+\bibitem{nakata2015optimized}
+\bibinfo{author}{Nakata, A.}, \bibinfo{author}{Bowler, D.~R.} \&
+  \bibinfo{author}{Miyazaki, T.}
+\newblock \bibinfo{title}{Optimized multi-site local orbitals in the
+  large-scale dft program conquest}.
+\newblock \emph{\bibinfo{journal}{Phys. Chem. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{17}}, \bibinfo{pages}{31427--31433}
+  (\bibinfo{year}{2015}).
+
+\bibitem{mohr2015accurate}
+\bibinfo{author}{Mohr, S.} \emph{et~al.}
+\newblock \bibinfo{title}{Accurate and efficient linear scaling dft
+  calculations with universal applicability}.
+\newblock \emph{\bibinfo{journal}{Phys. Chem. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{17}}, \bibinfo{pages}{31360--31370}
+  (\bibinfo{year}{2015}).
+
+\bibitem{mostofi2003preconditioned}
+\bibinfo{author}{Mostofi, A.~A.}, \bibinfo{author}{Haynes, P.~D.},
+  \bibinfo{author}{Skylaris, C.-K.} \& \bibinfo{author}{Payne, M.~C.}
+\newblock \bibinfo{title}{Preconditioned iterative minimization for
+  linear-scaling electronic structure calculations}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{119}}, \bibinfo{pages}{8842} (\bibinfo{year}{2003}).
+
+\bibitem{matsuoka1977expansion}
+\bibinfo{author}{Matsuoka, O.}
+\newblock \bibinfo{title}{Expansion methods for adams--gilbert equations. i.
+  modified adams--gilbert equation and common and fluctuating basis sets}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{66}}, \bibinfo{pages}{1245--1254}
+  (\bibinfo{year}{1977}).
+
+\bibitem{stoll1977on}
+\bibinfo{author}{Stoll, H.} \& \bibinfo{author}{Preu{\ss}, H.}
+\newblock \bibinfo{title}{On the direct calculation of localized hf orbitals in
+  molecule clusters, layers and solids}.
+\newblock \emph{\bibinfo{journal}{Theor. Chem. Acc.}}
+  \textbf{\bibinfo{volume}{46}}, \bibinfo{pages}{11--21}
+  (\bibinfo{year}{1977}).
+
+\bibitem{mehler1977self}
+\bibinfo{author}{Mehler, E.~L.}
+\newblock \bibinfo{title}{Self-consistent, nonorthogonal group function
+  approximation for polyatomic systems. i. closed shells}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{67}}, \bibinfo{pages}{2728--2739}
+  (\bibinfo{year}{1977}).
+
+\bibitem{stoll1980use}
+\bibinfo{author}{Stoll, H.}, \bibinfo{author}{Wagenblast, G.} \&
+  \bibinfo{author}{Preu$\beta$, H.}
+\newblock \bibinfo{title}{On the use of local basis sets for localized
+  molecular orbitals}.
+\newblock \emph{\bibinfo{journal}{Theor. Chem. Acc.}}
+  \textbf{\bibinfo{volume}{57}}, \bibinfo{pages}{169--178}
+  (\bibinfo{year}{1980}).
+
+\bibitem{ordejon1995linear}
+\bibinfo{author}{Ordej{\'o}n, P.}, \bibinfo{author}{Drabold, D.~A.},
+  \bibinfo{author}{Martin, R.~M.} \& \bibinfo{author}{Grumbach, M.~P.}
+\newblock \bibinfo{title}{Linear system-size scaling methods for
+  electronic-structure calculations}.
+\newblock \emph{\bibinfo{journal}{Phys. Rev. B}} \textbf{\bibinfo{volume}{51}},
+  \bibinfo{pages}{1456} (\bibinfo{year}{1995}).
+
+\bibitem{burger2008linear}
+\bibinfo{author}{Burger, S.~K.} \& \bibinfo{author}{Yang, W.}
+\newblock \bibinfo{title}{Linear-scaling quantum calculations using
+  non-orthogonal localized molecular orbitals}.
+\newblock \emph{\bibinfo{journal}{J. Phys.: Condens. Matter}}
+  \textbf{\bibinfo{volume}{20}}, \bibinfo{pages}{294209}
+  (\bibinfo{year}{2008}).
+
+\bibitem{khaliullin2006efficient}
+\bibinfo{author}{Khaliullin, R.~Z.}, \bibinfo{author}{Head-Gordon, M.} \&
+  \bibinfo{author}{Bell, A.~T.}
+\newblock \bibinfo{title}{An efficient self-consistent field method for large
+  systems of weakly interacting components}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{124}}, \bibinfo{pages}{204105}
+  (\bibinfo{year}{2006}).
+
+\bibitem{khaliullin2007unravelling}
+\bibinfo{author}{Khaliullin, R.~Z.}, \bibinfo{author}{Cobar, E.~A.},
+  \bibinfo{author}{Lochan, R.~C.}, \bibinfo{author}{Bell, A.~T.} \&
+  \bibinfo{author}{Head-Gordon, M.}
+\newblock \bibinfo{title}{Unravelling the origin of intermolecular interactions
+  using absolutely localized molecular orbitals}.
+\newblock \emph{\bibinfo{journal}{J. Phys. Chem. A}}
+  \textbf{\bibinfo{volume}{111}}, \bibinfo{pages}{8753--8765}
+  (\bibinfo{year}{2007}).
+
+\bibitem{khaliullin2008analysis}
+\bibinfo{author}{Khaliullin, R.~Z.}, \bibinfo{author}{Bell, A.~T.} \&
+  \bibinfo{author}{Head-Gordon, M.}
+\newblock \bibinfo{title}{Analysis of charge transfer effects in molecular
+  complexes based on absolutely localized molecular orbitals}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{128}}, \bibinfo{pages}{184112}
+  (\bibinfo{year}{2008}).
+
+\bibitem{horn2013unrestricted}
+\bibinfo{author}{Horn, P.~R.}, \bibinfo{author}{Sundstrom, E.~J.},
+  \bibinfo{author}{Baker, T.~A.} \& \bibinfo{author}{Head-Gordon, M.}
+\newblock \bibinfo{title}{Unrestricted absolutely localized molecular orbitals
+  for energy decomposition analysis: Theory and applications to intermolecular
+  interactions involving radicals}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{138}}, \bibinfo{pages}{134119}
+  (\bibinfo{year}{2013}).
+
+\bibitem{mo2000energy}
+\bibinfo{author}{Mo, Y.}, \bibinfo{author}{Gao, J.} \&
+  \bibinfo{author}{Peyerimhoff, S.~D.}
+\newblock \bibinfo{title}{Energy decomposition analysis of intermolecular
+  interactions using a block-localized wave function approach}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{112}}, \bibinfo{pages}{5530--5538}
+  (\bibinfo{year}{2000}).
+
+\bibitem{khaliullin2013microscopic}
+\bibinfo{author}{Khaliullin, R.~Z.} \& \bibinfo{author}{K{\"u}hne, T.~D.}
+\newblock \bibinfo{title}{Microscopic properties of liquid water from combined
+  ab initio molecular dynamics and energy decomposition studies}.
+\newblock \emph{\bibinfo{journal}{Phys. Chem. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{15}}, \bibinfo{pages}{15746--15766}
+  (\bibinfo{year}{2013}).
+
+\bibitem{mo2014block}
+\bibinfo{author}{Mo, Y.}
+\newblock \bibinfo{title}{The block-localized wavefunction (blw) perspective of
+  chemical bonding}.
+\newblock \emph{\bibinfo{journal}{The Chemical Bond: Fundamental Aspects of
+  Chemical Bonding}} \bibinfo{pages}{199--232} (\bibinfo{year}{2014}).
+
+\bibitem{mauri1993orbital}
+\bibinfo{author}{Mauri, F.}, \bibinfo{author}{Galli, G.} \&
+  \bibinfo{author}{Car, R.}
+\newblock \bibinfo{title}{Orbital formulation for electronic-structure
+  calculations with linear system-size scaling}.
+\newblock \emph{\bibinfo{journal}{Phys. Rev. B}} \textbf{\bibinfo{volume}{47}},
+  \bibinfo{pages}{9973} (\bibinfo{year}{1993}).
+
+\bibitem{fattebert2004linear}
+\bibinfo{author}{Fattebert, J.-L.} \& \bibinfo{author}{Gygi, F.}
+\newblock \bibinfo{title}{Linear scaling first-principles molecular dynamics
+  with controlled accuracy}.
+\newblock \emph{\bibinfo{journal}{Comput. Phys. Commun.}}
+  \textbf{\bibinfo{volume}{162}}, \bibinfo{pages}{24--36}
+  (\bibinfo{year}{2004}).
+
+\bibitem{peng2013effective}
+\bibinfo{author}{Peng, L.}, \bibinfo{author}{Gu, F.~L.} \&
+  \bibinfo{author}{Yang, W.}
+\newblock \bibinfo{title}{Effective preconditioning for ab initio ground state
+  energy minimization with non-orthogonal localized molecular orbitals}.
+\newblock \emph{\bibinfo{journal}{Phys. Chem. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{15}}, \bibinfo{pages}{15518--15527}
+  (\bibinfo{year}{2013}).
+
+\bibitem{tsuchida2008ab}
+\bibinfo{author}{Tsuchida, E.}
+\newblock \bibinfo{title}{Ab initio molecular dynamics simulations with linear
+  scaling: application to liquid ethanol}.
+\newblock \emph{\bibinfo{journal}{J. Phys.: Condens. Matter}}
+  \textbf{\bibinfo{volume}{20}}, \bibinfo{pages}{294212}
+  (\bibinfo{year}{2008}).
+
+\bibitem{yang1997absolute}
+\bibinfo{author}{Yang, W.}
+\newblock \bibinfo{title}{Absolute-energy-minimum principles for linear-scaling
+  electronic-structure calculations}.
+\newblock \emph{\bibinfo{journal}{Phys. Rev. B}} \textbf{\bibinfo{volume}{56}},
+  \bibinfo{pages}{9294} (\bibinfo{year}{1997}).
+
+\bibitem{kim1995total}
+\bibinfo{author}{Kim, J.}, \bibinfo{author}{Mauri, F.} \&
+  \bibinfo{author}{Galli, G.}
+\newblock \bibinfo{title}{Total-energy global optimizations using nonorthogonal
+  localized orbitals}.
+\newblock \emph{\bibinfo{journal}{Phys. Rev. B}} \textbf{\bibinfo{volume}{52}},
+  \bibinfo{pages}{1640} (\bibinfo{year}{1995}).
+
+\bibitem{fattebert2006linear}
+\bibinfo{author}{Fattebert, J.-L.} \& \bibinfo{author}{Gygi, F.}
+\newblock \bibinfo{title}{Linear-scaling first-principles molecular dynamics
+  with plane-waves accuracy}.
+\newblock \emph{\bibinfo{journal}{Phys. Rev. B}} \textbf{\bibinfo{volume}{73}},
+  \bibinfo{pages}{115124} (\bibinfo{year}{2006}).
+
+\bibitem{osei2014accurate}
+\bibinfo{author}{Osei-Kuffuor, D.} \& \bibinfo{author}{Fattebert, J.-L.}
+\newblock \bibinfo{title}{Accurate and scalable o (n) algorithm for
+  first-principles molecular-dynamics computations on large parallel
+  computers}.
+\newblock \emph{\bibinfo{journal}{Phys. Rev. Lett.}}
+  \textbf{\bibinfo{volume}{112}}, \bibinfo{pages}{046401}
+  (\bibinfo{year}{2014}).
+
+\bibitem{tsuchida2007augmented}
+\bibinfo{author}{Tsuchida, E.}
+\newblock \bibinfo{title}{Augmented orbital minimization method for linear
+  scaling electronic structure calculations}.
+\newblock \emph{\bibinfo{journal}{J. Phys. Soc. Jpn.}}
+  \textbf{\bibinfo{volume}{76}}, \bibinfo{pages}{034708}
+  (\bibinfo{year}{2007}).
+
+\bibitem{head1998tensor}
+\bibinfo{author}{Head-Gordon, M.}, \bibinfo{author}{Maslen, P.~E.} \&
+  \bibinfo{author}{White, C.~A.}
+\newblock \bibinfo{title}{A tensor formulation of many-electron theory in a
+  nonorthogonal single-particle basis}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{108}}, \bibinfo{pages}{616--625}
+  (\bibinfo{year}{1998}).
+
+\bibitem{galli1992large}
+\bibinfo{author}{Galli, G.} \& \bibinfo{author}{Parrinello, M.}
+\newblock \bibinfo{title}{Large scale electronic structure calculations}.
+\newblock \emph{\bibinfo{journal}{Phys. Rev. Lett.}}
+  \textbf{\bibinfo{volume}{69}}, \bibinfo{pages}{3547} (\bibinfo{year}{1992}).
+
+\bibitem{vandevondele2003efficient}
+\bibinfo{author}{VandeVondele, J.} \& \bibinfo{author}{Hutter, J.}
+\newblock \bibinfo{title}{An efficient orbital transformation method for
+  electronic structure calculations}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{118}}, \bibinfo{pages}{4365--4369}
+  (\bibinfo{year}{2003}).
+
+\bibitem{van2002geometric}
+\bibinfo{author}{Van~Voorhis, T.} \& \bibinfo{author}{Head-Gordon, M.}
+\newblock \bibinfo{title}{A geometric approach to direct minimization}.
+\newblock \emph{\bibinfo{journal}{Mol. Phys.}} \textbf{\bibinfo{volume}{100}},
+  \bibinfo{pages}{1713--1721} (\bibinfo{year}{2002}).
+
+\bibitem{vandevondele2007gaussian}
+\bibinfo{author}{VandeVondele, J.} \& \bibinfo{author}{Hutter, J.}
+\newblock \bibinfo{title}{Gaussian basis sets for accurate calculations on
+  molecular systems in gas and condensed phases}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{127}}, \bibinfo{pages}{114105}
+  (\bibinfo{year}{2007}).
+
+\bibitem{www:cp2k}
+\bibinfo{title}{Cp2k open source molecular dynamics}.
+\newblock \urlprefix\url{http://www.cp2k.org}.
+
+\bibitem{vandevondele2005quickstep}
+\bibinfo{author}{VandeVondele, J.} \emph{et~al.}
+\newblock \bibinfo{title}{Quickstep: Fast and accurate density functional
+  calculations using a mixed gaussian and plane waves approach}.
+\newblock \emph{\bibinfo{journal}{Comput. Phys. Commun.}}
+  \textbf{\bibinfo{volume}{167}}, \bibinfo{pages}{103--128}
+  (\bibinfo{year}{2005}).
+
+\bibitem{borvstnik2014sparse}
+\bibinfo{author}{Bor{\v{s}}tnik, U.}, \bibinfo{author}{VandeVondele, J.},
+  \bibinfo{author}{Weber, V.} \& \bibinfo{author}{Hutter, J.}
+\newblock \bibinfo{title}{Sparse matrix multiplication: The distributed
+  block-compressed sparse row library}.
+\newblock \emph{\bibinfo{journal}{Parallel Comput.}}
+  \textbf{\bibinfo{volume}{40}}, \bibinfo{pages}{47--58}
+  (\bibinfo{year}{2014}).
+
+\bibitem{hotelling1943some}
+\bibinfo{author}{Hotelling, H.}
+\newblock \bibinfo{title}{Some new methods in matrix calculation}.
+\newblock \emph{\bibinfo{journal}{Ann. Math. Stat.}}
+  \textbf{\bibinfo{volume}{14}}, \bibinfo{pages}{1--34} (\bibinfo{year}{1943}).
+
+\bibitem{feynman1939forces}
+\bibinfo{author}{Feynman, R.~P.}
+\newblock \bibinfo{title}{Forces in molecules}.
+\newblock \emph{\bibinfo{journal}{Phys. Rev.}} \textbf{\bibinfo{volume}{56}},
+  \bibinfo{pages}{340} (\bibinfo{year}{1939}).
+
+\bibitem{scheiber2018communication}
+\bibinfo{author}{Scheiber, H.}, \bibinfo{author}{Shi, Y.} \&
+  \bibinfo{author}{Khaliullin, R.~Z.}
+\newblock \bibinfo{title}{Communication: Compact orbitals enable low-cost
+  linear-scaling ab initio molecular dynamics for weakly-interacting systems}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{148}}, \bibinfo{pages}{231103}
+  (\bibinfo{year}{2018}).
+
+\bibitem{bussi2007canonical}
+\bibinfo{author}{Bussi, G.}, \bibinfo{author}{Donadio, D.} \&
+  \bibinfo{author}{Parrinello, M.}
+\newblock \bibinfo{title}{Canonical sampling through velocity rescaling}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{126}}, \bibinfo{pages}{014101}
+  (\bibinfo{year}{2007}).
+
+\bibitem{weber2008direct}
+\bibinfo{author}{Weber, V.}, \bibinfo{author}{VandeVondele, J.},
+  \bibinfo{author}{Hutter, J.} \& \bibinfo{author}{Niklasson, A.~M.}
+\newblock \bibinfo{title}{Direct energy functional minimization under
+  orthogonality constraints}.
+\newblock \emph{\bibinfo{journal}{J. Chem. Phys.}}
+  \textbf{\bibinfo{volume}{128}}, \bibinfo{pages}{084113}
+  (\bibinfo{year}{2008}).
+
+\end{thebibliography}
+
+%\newpage
+%\newpage
+%
+%%Y. Shi and R. Z. Khaliullin ``Robust linear-scaling optimization of compact localized orbitals in density functional theory''
+%
+%\begin{figure*}
+%\includegraphics[width=3.5in]{toc}
+%\caption{
+%Table of Contents use only
+%}
+%\label{fig:toc}
+%\end{figure*}
 
 \end{document}
